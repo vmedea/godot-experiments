@@ -40,7 +40,7 @@ func build_room(room):
 		for y in range(ROOM_MAX_Y):
 			for x in range(ROOM_MAX_X):
 				var tile_id = room.level[z][y][x]
-				if tile_id != 0:
+				if x < room.dims[0] and y < room.dims[1] and z < room.dims[2] and tile_id != 0:
 					tilemap.set_cell(0, Vector2i(x, y), 0, Vector2i(tile_id & 0xf, tile_id >> 4), 0)
 				else:
 					tilemap.set_cell(0, Vector2i(x, y))
