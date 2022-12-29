@@ -16,10 +16,10 @@ func load_rooms(filename):
 	var rooms_data = []
 	for n in num_rooms:
 		var room = {}
-		# north  -X
-		# east   +Y
-		# south  +X
-		# west   -Y
+		# right -Y   north
+		# down  +X   east
+		# left  +Y   south
+		# up    -X   west
 		room.exits = {'north': f.get_16(), 'east': f.get_16(), 'south': f.get_16(), 'west': f.get_16()}
 		room.dims = {'x': f.get_8(), 'y': f.get_8(), 'z': ROOM_MAX_Z} # Height is always MAX_Z
 		print("Room %s: exits %s dims %s" % [n, room.exits, room.dims])
@@ -63,13 +63,13 @@ func _ready():
 func _input(event):
 	var new_room_id = null
 	if event.is_action_pressed("ui_up"):
-		new_room_id = rooms[room_id].exits.north
-	if event.is_action_pressed("ui_right"):
-		new_room_id = rooms[room_id].exits.east
-	if event.is_action_pressed("ui_down"):
-		new_room_id = rooms[room_id].exits.south
-	if event.is_action_pressed("ui_left"):
 		new_room_id = rooms[room_id].exits.west
+	if event.is_action_pressed("ui_right"):
+		new_room_id = rooms[room_id].exits.north
+	if event.is_action_pressed("ui_down"):
+		new_room_id = rooms[room_id].exits.east
+	if event.is_action_pressed("ui_left"):
+		new_room_id = rooms[room_id].exits.south
 	if event.is_action_pressed("ui_page_up"):
 		new_room_id = room_id - 1
 	if event.is_action_pressed("ui_page_down"):
