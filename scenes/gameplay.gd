@@ -16,6 +16,7 @@ func load_rooms(filename):
 	var rooms_data = []
 	for n in num_rooms:
 		var room = {}
+		# up, right, down, left
 		room.exits = [f.get_16(), f.get_16(), f.get_16(), f.get_16()]
 		room.dims = [f.get_8(), f.get_8(), ROOM_MAX_Z] # Height is always MAX_Z
 		print("Room %s: exits %s dims %s" % [n, room.exits, room.dims])
@@ -44,21 +45,37 @@ func build_room(room):
 				else:
 					tilemap.set_cell(0, Vector2i(x, y))
 
+func update_room_number():
+	$CanvasLayer/RoomNumber.text = "Room %d" % [room_id]
+
 var room_id = 0
 var rooms = []
 
 func _ready():
 	rooms = load_rooms("res://rooms.bin")
 	build_room(rooms[room_id])
+	update_room_number()
 
 func _input(event):
-	if event.is_action_pressed("ui_left"):
-		room_id -= 1
-		if room_id < 0:
-			room_id = 0
-		build_room(rooms[room_id])
+	var new_room_id = null
+	if event.is_action_pressed("ui_up"):
+		new_room_id = rooms[room_id].exits[0]
 	if event.is_action_pressed("ui_right"):
-		room_id += 1
-		if room_id >= rooms.size():
-			room_id = rooms.size() - 1
-		build_room(rooms[room_id])
+		new_room_id = rooms[room_id].exits[1]
+	if event.is_action_pressed("ui_down"):
+		new_room_id = rooms[room_id].exits[2]
+	if event.is_action_pressed("ui_left"):
+		new_room_id = rooms[room_id].exits[3]
+	if event.is_action_pressed("ui_page_up"):
+		new_room_id = room_id - 1
+	if event.is_action_pressed("ui_page_down"):
+		new_room_id = room_id + 1
+	if new_room_id != null:
+		if new_room_id >= 0 and new_room_id < rooms.size():
+			room_id = new_room_id
+			build_room(rooms[room_id])
+			update_room_number()
+
+		
+	if event.is_action_pressed("ui_cancel"):
+		get_tree().quit()
