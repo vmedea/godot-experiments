@@ -18,7 +18,7 @@ func load_rooms(filename):
 		var room = {}
 		# up, right, down, left
 		room.exits = [f.get_16(), f.get_16(), f.get_16(), f.get_16()]
-		room.dims = [f.get_8(), f.get_8(), ROOM_MAX_Z] # Height is always MAX_Z
+		room.dims = {'x': f.get_8(), 'y': f.get_8(), 'z': ROOM_MAX_Z} # Height is always MAX_Z
 		print("Room %s: exits %s dims %s" % [n, room.exits, room.dims])
 
 		room.wall_type = f.get_8()
@@ -36,14 +36,15 @@ func load_rooms(filename):
 func build_room(room):
 	var tilemaps = [$Level/Z0, $Level/Z1, $Level/Z2, $Level/Z3, $Level/Z4, $Level/Z5, $Level/Z6, $Level/Z7, $Level/Z8, $Level/Z9, $Level/Z10]
 	for z in range(ROOM_MAX_Z):
+		tilemaps[z].clear()
+
+	for z in range(room.dims.z):
 		var tilemap: TileMap = tilemaps[z]
-		for y in range(ROOM_MAX_Y):
-			for x in range(ROOM_MAX_X):
+		for y in range(room.dims.y):
+			for x in range(room.dims.x):
 				var tile_id = room.level[z][y][x]
-				if x < room.dims[0] and y < room.dims[1] and z < room.dims[2] and tile_id != 0:
+				if tile_id != 0:
 					tilemap.set_cell(0, Vector2i(x, y), 0, Vector2i(tile_id & 0xf, tile_id >> 4), 0)
-				else:
-					tilemap.set_cell(0, Vector2i(x, y))
 
 func update_room_number():
 	$CanvasLayer/RoomNumber.text = "Room %d" % [room_id]
