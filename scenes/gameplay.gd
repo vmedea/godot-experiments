@@ -5,6 +5,9 @@ const ROOM_MAX_X := 8
 const ROOM_MAX_Y := 8
 const ROOM_MAX_Z := 11
 
+# north-west top coordinate of player, in tiles (16x16x16 pixels)
+var player_coord: Vector3
+
 func load_rooms(filename):
 	var f = FileAccess.open(filename, FileAccess.READ)
 	var magic := f.get_32()
@@ -55,21 +58,39 @@ func update_room_number():
 var room_id = 0
 var rooms = []
 
+func place_player():
+	var coord: Vector3 = player_coord + Vector3(0.0, -1.0, 0.0)
+	$Level/Z9/Player.position = Vector2(coord.x - coord.y, coord.x*0.5 + coord.y*0.5 + coord.z) * Vector2(16.0, 16.0)
+
 func _ready():
 	rooms = load_rooms("res://rooms.bin")
 	build_room(rooms[room_id])
 	update_room_number()
+	player_coord = Vector3(0, 0, 10)
+	place_player()
+
+func _process(delta):
+	var speed = 0.125 * 60
+	if Input.is_action_pressed('ui_up'):
+		player_coord.x -= speed * delta
+	if Input.is_action_pressed('ui_down'):
+		player_coord.x += speed * delta
+	if Input.is_action_pressed('ui_left'):
+		player_coord.y += speed * delta
+	if Input.is_action_pressed('ui_right'):
+		player_coord.y -= speed * delta
+	place_player()
 
 func _input(event):
 	var new_room_id = null
-	if event.is_action_pressed("ui_up"):
-		new_room_id = rooms[room_id].exits.west
-	if event.is_action_pressed("ui_right"):
-		new_room_id = rooms[room_id].exits.north
-	if event.is_action_pressed("ui_down"):
-		new_room_id = rooms[room_id].exits.east
-	if event.is_action_pressed("ui_left"):
-		new_room_id = rooms[room_id].exits.south
+	#if event.is_action_pressed("ui_up"):
+	#	new_room_id = rooms[room_id].exits.west
+	#if event.is_action_pressed("ui_right"):
+	#	new_room_id = rooms[room_id].exits.north
+	#if event.is_action_pressed("ui_down"):
+	#	new_room_id = rooms[room_id].exits.east
+	#if event.is_action_pressed("ui_left"):
+	#	new_room_id = rooms[room_id].exits.south
 	if event.is_action_pressed("ui_page_up"):
 		new_room_id = room_id - 1
 	if event.is_action_pressed("ui_page_down"):
