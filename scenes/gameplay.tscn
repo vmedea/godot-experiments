@@ -1,0 +1,75 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjff0raswj0w7"]
+
+[ext_resource type="TileSet" uid="uid://c187et4kt1xgt" path="res://tilesets/game.tres" id="1_oyj32"]
+[ext_resource type="Script" path="res://scenes/gameplay.gd" id="1_sliko"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_sliko")
+
+[node name="Level" type="Node2D" parent="."]
+position = Vector2(144, -56)
+
+[node name="Z10" type="TileMap" parent="Level"]
+position = Vector2(0, 160)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z9" type="TileMap" parent="Level"]
+position = Vector2(0, 144)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z8" type="TileMap" parent="Level"]
+position = Vector2(0, 128)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z7" type="TileMap" parent="Level"]
+position = Vector2(0, 112)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z6" type="TileMap" parent="Level"]
+position = Vector2(0, 96)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z5" type="TileMap" parent="Level"]
+position = Vector2(0, 80)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z4" type="TileMap" parent="Level"]
+position = Vector2(0, 64)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z3" type="TileMap" parent="Level"]
+position = Vector2(0, 48)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z2" type="TileMap" parent="Level"]
+position = Vector2(0, 32)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z1" type="TileMap" parent="Level"]
+position = Vector2(0, 16)
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
+
+[node name="Z0" type="TileMap" parent="Level"]
+tile_set = ExtResource("1_oyj32")
+format = 2
+metadata/_edit_lock_ = true
