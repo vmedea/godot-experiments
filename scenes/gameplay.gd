@@ -5,7 +5,7 @@ const ROOM_MAX_X := 8
 const ROOM_MAX_Y := 8
 const ROOM_MAX_Z := 11
 
-## Compass directions.
+## Compass (room exit) directions.
 enum Compass {
 	NORTH = 0, ## -Y (right key)
 	EAST = 1,  ## +X (down key)
@@ -91,9 +91,7 @@ func build_room(room):
 	tilemap.clear()
 	
 	for z in range(ROOM_MAX_Z):
-		#tilemap.set_layer_z_index(z, z)
 		tilemap.set_layer_y_sort_origin(z, z*16 + z)
-		pass
 
 	for z in range(room.dims.z):
 		for y in range(room.dims.y):
@@ -189,7 +187,7 @@ func collision_check(room, pos: Vector3):
 	return true
 
 ## Check player position, velocity to see if player is entering a portal (one of
-## EXIT_X0, EXIT_Y0), and from which side. The direction is important, and the player
+## EXIT_*), and from which side. The direction is important, and the player
 ## has to be correctly in front of the portal. It is possible to diagonally enter a portal.
 func exit_check(room, pos: Vector3, velocity: Vector3):
 	var x0 := int(floor(pos.x + velocity.x))
@@ -243,8 +241,8 @@ func _physics_process(delta):
 	if player_on_floor:
 		player_velocity.x = speed * direction.x
 		player_velocity.y = speed * direction.y
-	
-	# Jumping
+
+	# Jumping (XXX break off after maximum number of tiles traveled)
 	if player_on_floor and Input.is_action_pressed('ui_accept'):
 		player_velocity.z = -3.0
 		player_on_floor = false
