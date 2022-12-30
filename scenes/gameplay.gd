@@ -244,11 +244,11 @@ func _physics_process(delta):
 
 	# Jumping (XXX break off after maximum number of tiles traveled)
 	if player_on_floor and Input.is_action_pressed('ui_accept'):
-		player_velocity.z = -3.0
+		player_velocity.z = -0.2 * 60
 		player_on_floor = false
 		
 	# Gravity
-	player_velocity += Vector3(0.0, 0.0, 3.0) * delta
+	player_velocity += Vector3(0.0, 0.0, 60.0) * delta
 	
 	# Ideally, instead of doing this per coord, the collison would return a vector
 	# maximum movement in each direction for slide.
@@ -262,6 +262,7 @@ func _physics_process(delta):
 		player_on_floor = false
 	else:
 		player_on_floor = true
+		player_velocity.z = 0.0
 
 	var exit_id = exit_check(room, player_coord, player_velocity*delta)
 	if exit_id != -1:
@@ -277,6 +278,7 @@ func _physics_process(delta):
 			update_room_number()
 
 	place_player()
+
 
 func _input(event):
 	var new_room_id = null
@@ -297,7 +299,6 @@ func _input(event):
 			room_id = new_room_id
 			build_room(rooms[room_id])
 			update_room_number()
-
 		
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().quit()
