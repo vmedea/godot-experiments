@@ -13,6 +13,14 @@ enum Compass {
 	WEST = 3,  ## -X (up key)
 }
 
+## Offset, per compass direction.
+const DIR_OFFSET = [
+	Vector3i(0, -1, 0),
+	Vector3i(1, 0, 0),
+	Vector3i(0, 1, 0),
+	Vector3i(-1, 0, 0),
+]
+
 ## Special blocks.
 enum Blocks {
 	# Gates.
@@ -94,8 +102,42 @@ func build_room(room):
 				if tile_id != 0:
 					tilemap.set_cell(10 - z, Vector2i(x + z, y + z), 0, Vector2i(tile_id & 0xf, tile_id >> 4), 0)
 
+
+## Get block by x,y,z integer coordinate.
+func get_block(room, grid_pos: Vector3i) -> int:
+	if grid_pos.x < 0 or grid_pos.y < 0 or grid_pos.z < 0 or grid_pos.x >= room.dims.x or grid_pos.y >= room.dims.y or grid_pos.z >= room.dims.z:
+		return -1
+	return room.level[grid_pos.z][grid_pos.y][grid_pos.x]
+
+
+func find_entrance_from(room, direction: Compass):
+	# Scan along wall:
+	# NORTH -Y   XZ y==ymax   Blocks.EXIT_Y0 Blocks.EXIT_Y1
+	# EAST  +X   YZ x==0      Blocks.EXIT_X0 Blocks.EXIT_X1
+	# SOUTH +Y   XZ y==0      Blocks.EXIT_Y0 Blocks.EXIT_Y1
+	# WEST  -X   YZ x==xmax   Blocks.EXIT_X0 Blocks.EXIT_X1
+	if direction == Compass.NORTH or direction == Compass.SOUTH:
+		# Scan north or south wall for Blocks.EXIT_Y0 Blocks.EXIT_Y1
+		var y = room.dims.y - 1 if direction == Compass.NORTH else 0
+		for x in room.dims.x - 1:
+			for z in room.dims.z:
+				if get_block(room, Vector3i(x, y, z)) == Blocks.EXIT_Y0 and get_block(room, Vector3i(x + 1, y, z)) == Blocks.EXIT_Y1:
+					return Vector3(x + 0.5, y, z) + Vector3(DIR_OFFSET[direction])
+	else:
+		# Scan west or east wall for Blocks.EXIT_X0 Blocks.EXIT_X1
+		var x = room.dims.x - 1 if direction == Compass.WEST else 0
+		for y in room.dims.y - 1:
+			for z in room.dims.z:
+				if get_block(room, Vector3i(x, y, z)) == Blocks.EXIT_X1 and get_block(room, Vector3i(x, y + 1, z)) == Blocks.EXIT_X0:
+					return Vector3(x, y + 0.5, z) + Vector3(DIR_OFFSET[direction])
+
 func update_room_number():
 	$CanvasLayer/RoomNumber.text = "Room %d" % [room_id]
+	
+	print('Entrance from north: ', find_entrance_from(rooms[room_id], Compass.NORTH))
+	print('Entrance from south: ', find_entrance_from(rooms[room_id], Compass.SOUTH))
+	print('Entrance from west: ', find_entrance_from(rooms[room_id], Compass.WEST))
+	print('Entrance from east: ', find_entrance_from(rooms[room_id], Compass.EAST))
 
 # Player size: somewhat smaller size than a tile.
 var TOFS: float = 14.999/16
@@ -128,13 +170,6 @@ func _ready():
 	place_player()
 
 
-## Get block by x,y,z integer coordinate.
-func get_block(room, grid_pos: Vector3i) -> int:
-	if grid_pos.x < 0 or grid_pos.y < 0 or grid_pos.z < 0 or grid_pos.x >= room.dims.x or grid_pos.y >= room.dims.y or grid_pos.z >= room.dims.z:
-		return -1
-	return room.level[grid_pos.z][grid_pos.y][grid_pos.x]
-
-
 ## Check new position for collisions.
 func collision_check(room, pos: Vector3):
 	# Player box.
@@ -149,7 +184,7 @@ func collision_check(room, pos: Vector3):
 		for y in range(y0, y1 + 1):
 			for x in range(x0, x1 + 1):
 				if get_block(room, Vector3i(x, y, z)) != 0:
-					return false
+					return false # XXX spiky/pump
 	#print(x0, " ", x1, " ", y0, " ", y1, " ", z0, " ", z1)
 	return true
 
@@ -236,7 +271,11 @@ func _physics_process(delta):
 		var new_room_id = room.exits[exit_id]
 		if new_room_id >= 0 and new_room_id < rooms.size():
 			room_id = new_room_id
+			player_coord = find_entrance_from(rooms[room_id], exit_id)
+			print(player_coord)
+			player_velocity = Vector3(0.0, 0.0, 0.0)
 			build_room(rooms[room_id])
+			# Need to find out where to enter in new room.
 			update_room_number()
 
 	place_player()
