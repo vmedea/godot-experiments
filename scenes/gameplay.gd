@@ -7,6 +7,11 @@ const ROOM_MAX_Z := 11
 
 # north-west top coordinate of player, in tiles (16x16x16 pixels)
 var player_coord: Vector3
+var player_velocity: Vector3
+
+var room_id = 0
+var rooms = []
+
 
 func load_rooms(filename):
 	var f = FileAccess.open(filename, FileAccess.READ)
@@ -25,7 +30,7 @@ func load_rooms(filename):
 		# up    -X   west
 		room.exits = {'north': f.get_16(), 'east': f.get_16(), 'south': f.get_16(), 'west': f.get_16()}
 		room.dims = {'x': f.get_8(), 'y': f.get_8(), 'z': ROOM_MAX_Z} # Height is always MAX_Z
-		print("Room %s: exits %s dims %s" % [n, room.exits, room.dims])
+		#print("Room %s: exits %s dims %s" % [n, room.exits, room.dims])
 
 		room.wall_type = f.get_8()
 		room.light_default = f.get_8()
@@ -40,45 +45,111 @@ func load_rooms(filename):
 	return rooms_data
 
 func build_room(room):
-	var tilemaps = [$Level/Z0, $Level/Z1, $Level/Z2, $Level/Z3, $Level/Z4, $Level/Z5, $Level/Z6, $Level/Z7, $Level/Z8, $Level/Z9, $Level/Z10]
+	var tilemap: TileMap = $Level
+	tilemap.clear()
+	
 	for z in range(ROOM_MAX_Z):
-		tilemaps[z].clear()
+		#tilemap.set_layer_z_index(z, z)
+		tilemap.set_layer_y_sort_origin(z, z*16 + z)
+		pass
 
 	for z in range(room.dims.z):
-		var tilemap: TileMap = tilemaps[z]
 		for y in range(room.dims.y):
 			for x in range(room.dims.x):
 				var tile_id = room.level[z][y][x]
 				if tile_id != 0:
-					tilemap.set_cell(0, Vector2i(x, y), 0, Vector2i(tile_id & 0xf, tile_id >> 4), 0)
+					tilemap.set_cell(10 - z, Vector2i(x + z, y + z), 0, Vector2i(tile_id & 0xf, tile_id >> 4), 0)
 
 func update_room_number():
 	$CanvasLayer/RoomNumber.text = "Room %d" % [room_id]
 
-var room_id = 0
-var rooms = []
+# Player size: somewhat smaller size than a tile.
+var TOFS: float = 14.999/16
 
 func place_player():
-	var coord: Vector3 = player_coord + Vector3(0.0, -1.0, 0.0)
-	$Level/Z9/Player.position = Vector2(coord.x - coord.y, coord.x*0.5 + coord.y*0.5 + coord.z) * Vector2(16.0, 16.0)
-
+	var tilemap: TileMap = $Level
+	# y-sorting grid offset.
+	var grid_pos_s = tilemap.map_to_local(Vector2i(floor(player_coord.x + TOFS) + floor(player_coord.z), floor(player_coord.y + TOFS) + floor(player_coord.z)))
+	# y-sorting layer.
+	var layer = 10 - floor(player_coord.z) # layer
+	var layer_offset = Vector2(0.0, layer*16 + layer)
+	# Display position of player.
+	var local_pos = Vector2(player_coord.x - player_coord.y, player_coord.x*0.5 + player_coord.y*0.5 + player_coord.z) * Vector2(16.0, 16.0) + Vector2(16.0, 8.0)
+	
+	# Sorting position.
+	$Level/Player.position = grid_pos_s + layer_offset
+	# Position of player sprite relative to sorting position.
+	$Level/Player/Player.position = local_pos - $Level/Player.position
+	
+	#$Sprite2D.position = $Level.position + grid_pos_s
+	
+	
 func _ready():
 	rooms = load_rooms("res://rooms.bin")
 	build_room(rooms[room_id])
 	update_room_number()
-	player_coord = Vector3(0, 0, 10)
+	player_coord = Vector3(1, 1, 9)
 	place_player()
+
+func collision_check(pos: Vector3):
+	var x0 := int(floor(pos.x))
+	var x1 := int(floor(pos.x + TOFS))
+	var y0 := int(floor(pos.y))
+	var y1 := int(floor(pos.y + TOFS))
+	var z0 := int(floor(pos.z))
+	var z1 := int(floor(pos.z + TOFS))
+	var room = rooms[room_id]
+	for z in range(z0, z1 + 1):
+		for y in range(y0, y1 + 1):
+			for x in range(x0, x1 + 1):
+				if x < 0 or y < 0 or z < 0 or x >= room.dims.x or y >= room.dims.y or z >= room.dims.z:
+					return false
+				if room.level[z][y][x] != 0:
+					return false
+	#print(x0, " ", x1, " ", y0, " ", y1, " ", z0, " ", z1)
+	return true
 
 func _process(delta):
 	var speed = 0.125 * 60
+	var direction: Vector3
 	if Input.is_action_pressed('ui_up'):
-		player_coord.x -= speed * delta
+		direction.x = -1.0
 	if Input.is_action_pressed('ui_down'):
-		player_coord.x += speed * delta
+		direction.x = 1.0
 	if Input.is_action_pressed('ui_left'):
-		player_coord.y += speed * delta
+		direction.y = 1.0
 	if Input.is_action_pressed('ui_right'):
-		player_coord.y -= speed * delta
+		direction.y = -1.0
+		
+	#if direction.length_squared() != 0:
+	#	$Level/Player.play("walk")
+	#else:
+	#	$Level/Player.stop()
+	
+	player_velocity.x = speed * direction.x
+	player_velocity.y = speed * direction.y
+	
+	# Jumping
+	if Input.is_action_pressed('ui_accept'):
+		player_velocity.z = -2.0
+		
+	# Gravity
+	player_velocity += Vector3(0.0, 0.0, 2.0) * delta
+	
+	# Ideally, instead of doing this per coord, the collison would return a vector
+	# maximum movement in each direction for slide.
+	var new_coord = player_coord + Vector3(player_velocity.x, 0.0, 0.0) * delta
+	if collision_check(new_coord):
+		player_coord = new_coord
+	
+	new_coord = player_coord + Vector3(0.0, player_velocity.y, 0.0) * delta
+	if collision_check(new_coord):
+		player_coord = new_coord
+		
+	new_coord = player_coord + Vector3(0.0, 0.0, player_velocity.z) * delta
+	if collision_check(new_coord):
+		player_coord = new_coord
+		
 	place_player()
 
 func _input(event):
