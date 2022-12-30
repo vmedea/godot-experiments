@@ -10,7 +10,7 @@ var player_coord: Vector3
 var player_velocity: Vector3
 var player_on_floor: bool
 
-var room_id = 0
+var room_id = 5
 var rooms = []
 
 
@@ -68,12 +68,13 @@ func update_room_number():
 var TOFS: float = 14.999/16
 
 func place_player():
+	# This is not perfect, but as close as we can get with y-sorting.
 	var tilemap: TileMap = $Level
 	# y-sorting grid offset.
-	var grid_pos_s = tilemap.map_to_local(Vector2i(floor(player_coord.x + TOFS) + floor(player_coord.z), floor(player_coord.y + TOFS) + floor(player_coord.z)))
+	var grid_pos_s = tilemap.map_to_local(Vector2i(floor(player_coord.x + TOFS) + floor(player_coord.z + TOFS), floor(player_coord.y + TOFS) + floor(player_coord.z + TOFS)))
 	# y-sorting layer.
-	var layer: int = 10 - floor(player_coord.z) # layer
-	var layer_offset = Vector2(0.0, layer*16 + layer)
+	var layer: int = 10 - floor(player_coord.z + TOFS) # layer
+	var layer_offset = Vector2(0.0, layer*16 + layer - 1)
 	# Display position of player.
 	var local_pos = Vector2(player_coord.x - player_coord.y, player_coord.x*0.5 + player_coord.y*0.5 + player_coord.z) * Vector2(16.0, 16.0) + Vector2(16.0, 8.0)
 	
@@ -89,7 +90,7 @@ func _ready():
 	rooms = load_rooms("res://rooms.bin")
 	build_room(rooms[room_id])
 	update_room_number()
-	player_coord = Vector3(1, 1, 9)
+	player_coord = Vector3(3, 3, 9)
 	place_player()
 
 func collision_check(pos: Vector3):
