@@ -96,8 +96,8 @@ func build_room(room):
 	for z in range(room.dims.z):
 		for y in range(room.dims.y):
 			for x in range(room.dims.x):
-				var tile_id = room.level[z][y][x]
-				if tile_id != 0:
+				var tile_id = get_block(room, Vector3(x, y, z))
+				if tile_id > 0:
 					tilemap.set_cell(10 - z, Vector2i(x + z, y + z), 0, Vector2i(tile_id & 0xf, tile_id >> 4), 0)
 
 
@@ -207,13 +207,13 @@ func exit_check(room, pos: Vector3, velocity: Vector3):
 		y = y1
 		
 	if x != null:
-		if get_block(room, Vector3i(x, y0, z)) == Blocks.EXIT_X1 and get_block(room, Vector3i(x, y1, z)) == Blocks.EXIT_X0:
+		if get_block(room, Vector3i(x, y0, z)) in [Blocks.EXIT_X0, Blocks.EXIT_X1] and get_block(room, Vector3i(x, y1, z)) in [Blocks.EXIT_X0, Blocks.EXIT_X1]:
 			if velocity.x < 0:
 				return Compass.WEST
 			else:
 				return Compass.EAST
 	if y != null:
-		if get_block(room, Vector3i(x0, y, z)) == Blocks.EXIT_Y0 and get_block(room, Vector3i(x1, y, z)) == Blocks.EXIT_Y1:
+		if get_block(room, Vector3i(x0, y, z)) in [Blocks.EXIT_Y0, Blocks.EXIT_Y1] and get_block(room, Vector3i(x1, y, z)) in [Blocks.EXIT_Y0, Blocks.EXIT_Y1]:
 			if velocity.y < 0:
 				return Compass.NORTH
 			else:
