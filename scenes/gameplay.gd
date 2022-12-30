@@ -5,6 +5,34 @@ const ROOM_MAX_X := 8
 const ROOM_MAX_Y := 8
 const ROOM_MAX_Z := 11
 
+## Special blocks.
+enum Block {
+	# Gates.
+	EXIT_X0 = 20,
+	EXIT_X1 = 22,
+	EXIT_Y0 = 16,
+	EXIT_Y1 = 18,
+
+	# Light.
+	CANDLE = 36,
+	TORCH = 45,
+	LAMPION = 178,
+
+	# Air.
+	PUMP = 24,
+	
+	# Initial quest.
+	SPELLBOOK = 93,
+	
+	# Ingredients.
+	BUDDHA = 92,
+	CRUCIFIX = 46,
+	PUMPKIN = 181,
+	DRAGON = 191,
+	FLASK = 157,
+	BEANS = 200,
+}
+
 # north-west top coordinate of player, in tiles (16x16x16 pixels)
 var player_coord: Vector3
 var player_velocity: Vector3
