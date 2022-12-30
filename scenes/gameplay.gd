@@ -233,6 +233,12 @@ func _physics_process(delta):
 	var exit_id = exit_check(room, player_coord, player_velocity*delta)
 	if exit_id != -1:
 		print('Detected exit in direction %d' % [exit_id])
+		var new_room_id = room.exits[exit_id]
+		if new_room_id >= 0 and new_room_id < rooms.size():
+			room_id = new_room_id
+			build_room(rooms[room_id])
+			update_room_number()
+
 	place_player()
 
 func _input(event):
