@@ -71,19 +71,20 @@ func place_player():
 	# This is not perfect, but as close as we can get with y-sorting.
 	var tilemap: TileMap = $Level
 	# y-sorting grid offset.
-	var grid_pos_s = tilemap.map_to_local(Vector2i(floor(player_coord.x + TOFS) + floor(player_coord.z + TOFS), floor(player_coord.y + TOFS) + floor(player_coord.z + TOFS)))
+	var grid_pos_s := Vector3i(floor(player_coord.x + TOFS), floor(player_coord.y + TOFS), floor(player_coord.z + TOFS))
+	var pos_s = tilemap.map_to_local(Vector2i(grid_pos_s.x + grid_pos_s.z, grid_pos_s.y + grid_pos_s.z))
 	# y-sorting layer.
-	var layer: int = 10 - floor(player_coord.z + TOFS) # layer
-	var layer_offset = Vector2(0.0, layer*16 + layer - 1)
+	var layer_offset = Vector2(0.0, tilemap.get_layer_y_sort_origin(10 - grid_pos_s.z) - 1)
 	# Display position of player.
 	var local_pos = Vector2(player_coord.x - player_coord.y, player_coord.x*0.5 + player_coord.y*0.5 + player_coord.z) * Vector2(16.0, 16.0) + Vector2(16.0, 8.0)
 	
 	# Sorting position.
-	$Level/Player.position = grid_pos_s + layer_offset
+	$Level/Player.position = pos_s + layer_offset
 	# Position of player sprite relative to sorting position.
 	$Level/Player/Player.position = local_pos - $Level/Player.position
 	
-	#$Sprite2D.position = $Level.position + grid_pos_s
+	# Show sorting position.
+	#$Sprite2D.position = $Level.position + pos_s
 	
 	
 func _ready():
