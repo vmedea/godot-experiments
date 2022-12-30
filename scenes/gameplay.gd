@@ -5,8 +5,16 @@ const ROOM_MAX_X := 8
 const ROOM_MAX_Y := 8
 const ROOM_MAX_Z := 11
 
+## Compass directions.
+enum Compass {
+	NORTH = 0, ## -Y (right key)
+	EAST = 1,  ## +X (down key)
+	SOUTH = 2, ## +Y (left key)
+	WEST = 3,  ## -X (up key)
+}
+
 ## Special blocks.
-enum Block {
+enum Blocks {
 	# Gates.
 	EXIT_X0 = 20,
 	EXIT_X1 = 22,
@@ -53,11 +61,8 @@ func load_rooms(filename):
 	var rooms_data = []
 	for n in num_rooms:
 		var room = {}
-		# right -Y   north
-		# down  +X   east
-		# left  +Y   south
-		# up    -X   west
-		room.exits = {'north': f.get_16(), 'east': f.get_16(), 'south': f.get_16(), 'west': f.get_16()}
+		# North, East, South, West
+		room.exits = [f.get_16(), f.get_16(), f.get_16(), f.get_16()]
 		room.dims = {'x': f.get_8(), 'y': f.get_8(), 'z': ROOM_MAX_Z} # Height is always MAX_Z
 		#print("Room %s: exits %s dims %s" % [n, room.exits, room.dims])
 
@@ -122,7 +127,16 @@ func _ready():
 	player_coord = Vector3(3, 3, 9)
 	place_player()
 
-func collision_check(pos: Vector3):
+
+## Get block by x,y,z integer coordinate.
+func get_block(room, grid_pos: Vector3i) -> int:
+	if grid_pos.x < 0 or grid_pos.y < 0 or grid_pos.z < 0 or grid_pos.x >= room.dims.x or grid_pos.y >= room.dims.y or grid_pos.z >= room.dims.z:
+		return -1
+	return room.level[grid_pos.z][grid_pos.y][grid_pos.x]
+
+
+## Check new position for collisions.
+func collision_check(room, pos: Vector3):
 	# Player box.
 	var x0 := int(floor(pos.x))
 	var x1 := int(floor(pos.x + TOFS))
@@ -130,23 +144,52 @@ func collision_check(pos: Vector3):
 	var y1 := int(floor(pos.y + TOFS))
 	var z0 := int(floor(pos.z))
 	var z1 := int(floor(pos.z + TOFS))
-	var room = rooms[room_id]
+	
 	for z in range(z0, z1 + 1):
 		for y in range(y0, y1 + 1):
 			for x in range(x0, x1 + 1):
-				if x < 0 or y < 0 or z < 0 or x >= room.dims.x or y >= room.dims.y or z >= room.dims.z:
-					return false
-				if room.level[z][y][x] != 0:
+				if get_block(room, Vector3i(x, y, z)) != 0:
 					return false
 	#print(x0, " ", x1, " ", y0, " ", y1, " ", z0, " ", z1)
 	return true
 
-## Check player position, velocity to see if player is entering a portal.
-func exit_check():
-	pass
+## Check player position, velocity to see if player is entering a portal (one of
+## EXIT_X0, EXIT_Y0), and from which side. The direction is important, and the player
+## has to be correctly in front of the portal. It is possible to diagonally enter a portal.
+func exit_check(room, pos: Vector3, velocity: Vector3):
+	var x0 := int(floor(pos.x + velocity.x))
+	var x1 := int(floor(pos.x + velocity.x + TOFS))
+	var y0 := int(floor(pos.y + velocity.y))
+	var y1 := int(floor(pos.y + velocity.y + TOFS))
+	var x
+	var y
+	var z := int(floor(pos.z))
+	if velocity.x < 0:
+		x = x0
+	if velocity.x > 0:
+		x = x1
+	if velocity.y < 0:
+		y = y0
+	if velocity.y > 0:
+		y = y1
+		
+	if x != null:
+		if get_block(room, Vector3i(x, y0, z)) == Blocks.EXIT_X1 and get_block(room, Vector3i(x, y1, z)) == Blocks.EXIT_X0:
+			if velocity.x < 0:
+				return Compass.WEST
+			else:
+				return Compass.EAST
+	if y != null:
+		if get_block(room, Vector3i(x0, y, z)) == Blocks.EXIT_Y0 and get_block(room, Vector3i(x1, y, z)) == Blocks.EXIT_Y1:
+			if velocity.y < 0:
+				return Compass.NORTH
+			else:
+				return Compass.SOUTH
+	return -1		
 
 ## Called every physics frame.
 func _physics_process(delta):
+	var room = rooms[room_id]
 	var speed = 0.125 * 60
 	var direction: Vector3
 	if Input.is_action_pressed('ui_up'):
@@ -177,29 +220,31 @@ func _physics_process(delta):
 	# Ideally, instead of doing this per coord, the collison would return a vector
 	# maximum movement in each direction for slide.
 	var new_coord = player_coord + Vector3(player_velocity.x, player_velocity.y, 0.0) * delta
-	if collision_check(new_coord):
+	if collision_check(room, new_coord):
 		player_coord = new_coord
 	
 	new_coord = player_coord + Vector3(0.0, 0.0, player_velocity.z) * delta
-	if collision_check(new_coord):
+	if collision_check(room, new_coord):
 		player_coord = new_coord
 		player_on_floor = false
 	else:
 		player_on_floor = true
 
-	exit_check()
+	var exit_id = exit_check(room, player_coord, player_velocity*delta)
+	if exit_id != -1:
+		print('Detected exit in direction %d' % [exit_id])
 	place_player()
 
 func _input(event):
 	var new_room_id = null
 	#if event.is_action_pressed("ui_up"):
-	#	new_room_id = rooms[room_id].exits.west
+	#	new_room_id = rooms[room_id].exits[Compass.WEST]
 	#if event.is_action_pressed("ui_right"):
-	#	new_room_id = rooms[room_id].exits.north
+	#	new_room_id = rooms[room_id].exits[Compass.NORTH]
 	#if event.is_action_pressed("ui_down"):
-	#	new_room_id = rooms[room_id].exits.east
+	#	new_room_id = rooms[room_id].exits[Compass.EAST]
 	#if event.is_action_pressed("ui_left"):
-	#	new_room_id = rooms[room_id].exits.south
+	#	new_room_id = rooms[room_id].exits[Compass.SOUTH]
 	if event.is_action_pressed("ui_page_up"):
 		new_room_id = room_id - 1
 	if event.is_action_pressed("ui_page_down"):
