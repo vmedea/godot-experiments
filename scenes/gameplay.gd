@@ -141,6 +141,11 @@ func collision_check(pos: Vector3):
 	#print(x0, " ", x1, " ", y0, " ", y1, " ", z0, " ", z1)
 	return true
 
+## Check player position, velocity to see if player is entering a portal.
+func exit_check():
+	pass
+
+## Called every physics frame.
 func _physics_process(delta):
 	var speed = 0.125 * 60
 	var direction: Vector3
@@ -153,10 +158,10 @@ func _physics_process(delta):
 	if Input.is_action_pressed('ui_right'):
 		direction.y = -1.0
 		
-	#if direction.length_squared() != 0:
-	#	$Level/Player.play("walk")
-	#else:
-	#	$Level/Player.stop()
+	if direction.length_squared() != 0:
+		$Level/Player/Player.play("walk")
+	else:
+		$Level/Player/Player.stop()
 	if player_on_floor:
 		player_velocity.x = speed * direction.x
 		player_velocity.y = speed * direction.y
@@ -181,7 +186,8 @@ func _physics_process(delta):
 		player_on_floor = false
 	else:
 		player_on_floor = true
-		
+
+	exit_check()
 	place_player()
 
 func _input(event):
