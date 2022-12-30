@@ -8,6 +8,7 @@ const ROOM_MAX_Z := 11
 # north-west top coordinate of player, in tiles (16x16x16 pixels)
 var player_coord: Vector3
 var player_velocity: Vector3
+var player_on_floor: bool
 
 var room_id = 0
 var rooms = []
@@ -71,7 +72,7 @@ func place_player():
 	# y-sorting grid offset.
 	var grid_pos_s = tilemap.map_to_local(Vector2i(floor(player_coord.x + TOFS) + floor(player_coord.z), floor(player_coord.y + TOFS) + floor(player_coord.z)))
 	# y-sorting layer.
-	var layer = 10 - floor(player_coord.z) # layer
+	var layer: int = 10 - floor(player_coord.z) # layer
 	var layer_offset = Vector2(0.0, layer*16 + layer)
 	# Display position of player.
 	var local_pos = Vector2(player_coord.x - player_coord.y, player_coord.x*0.5 + player_coord.y*0.5 + player_coord.z) * Vector2(16.0, 16.0) + Vector2(16.0, 8.0)
@@ -92,6 +93,7 @@ func _ready():
 	place_player()
 
 func collision_check(pos: Vector3):
+	# Player box.
 	var x0 := int(floor(pos.x))
 	var x1 := int(floor(pos.x + TOFS))
 	var y0 := int(floor(pos.y))
@@ -109,7 +111,7 @@ func collision_check(pos: Vector3):
 	#print(x0, " ", x1, " ", y0, " ", y1, " ", z0, " ", z1)
 	return true
 
-func _process(delta):
+func _physics_process(delta):
 	var speed = 0.125 * 60
 	var direction: Vector3
 	if Input.is_action_pressed('ui_up'):
@@ -125,13 +127,14 @@ func _process(delta):
 	#	$Level/Player.play("walk")
 	#else:
 	#	$Level/Player.stop()
-	
-	player_velocity.x = speed * direction.x
-	player_velocity.y = speed * direction.y
+	if player_on_floor:
+		player_velocity.x = speed * direction.x
+		player_velocity.y = speed * direction.y
 	
 	# Jumping
-	if Input.is_action_pressed('ui_accept'):
-		player_velocity.z = -2.0
+	if player_on_floor and Input.is_action_pressed('ui_accept'):
+		player_velocity.z = -3.0
+		player_on_floor = false
 		
 	# Gravity
 	player_velocity += Vector3(0.0, 0.0, 2.0) * delta
@@ -149,6 +152,9 @@ func _process(delta):
 	new_coord = player_coord + Vector3(0.0, 0.0, player_velocity.z) * delta
 	if collision_check(new_coord):
 		player_coord = new_coord
+		player_on_floor = false
+	else:
+		player_on_floor = true
 		
 	place_player()
 
