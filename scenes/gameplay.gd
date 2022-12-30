@@ -137,18 +137,14 @@ func _physics_process(delta):
 		player_on_floor = false
 		
 	# Gravity
-	player_velocity += Vector3(0.0, 0.0, 2.0) * delta
+	player_velocity += Vector3(0.0, 0.0, 3.0) * delta
 	
 	# Ideally, instead of doing this per coord, the collison would return a vector
 	# maximum movement in each direction for slide.
-	var new_coord = player_coord + Vector3(player_velocity.x, 0.0, 0.0) * delta
+	var new_coord = player_coord + Vector3(player_velocity.x, player_velocity.y, 0.0) * delta
 	if collision_check(new_coord):
 		player_coord = new_coord
 	
-	new_coord = player_coord + Vector3(0.0, player_velocity.y, 0.0) * delta
-	if collision_check(new_coord):
-		player_coord = new_coord
-		
 	new_coord = player_coord + Vector3(0.0, 0.0, player_velocity.z) * delta
 	if collision_check(new_coord):
 		player_coord = new_coord
