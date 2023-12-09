@@ -17,6 +17,6 @@ script = ExtResource("1_ekdhk")
 [node name="TextureRect" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_mkh6q")
 offset_right = 1152.0
-offset_bottom = 648.0
+offset_bottom = 576.0
 texture = SubResource("ImageTexture_8judv")
 script = ExtResource("2_pjvfg")
