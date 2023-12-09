@@ -5,8 +5,8 @@ extends Node2D
 
 @onready var info_label: Label = $TextureRect/InfoLabel;
 
-func _set_info(debug: String, distance: String, heading: String, speed: String):
-	info_label.text = debug + "\n" + distance + "\n" + heading + "\n" + speed;
+func _set_info(debug: String, distance: String, heading: String, speed: int):
+	info_label.text = debug + "\n" + distance + "\n" + heading + ("\nSpeed: %d" % [speed]);
 
 func _ready():
 	$TextureRect.Info.connect(_set_info)
