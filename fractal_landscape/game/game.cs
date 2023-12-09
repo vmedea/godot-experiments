@@ -1,7 +1,8 @@
+/* Based on code from http://bringerp.free.fr/RE/CaptainBlood/main.php5 by Kroah */
 using System;
 using Godot;
 
-  public class Game {
+public class Game {
 	public bool _fast;
 	public bool _descending;
 
@@ -1337,4 +1338,4 @@ using Godot;
 	  return (X);
 	}
 	#endregion
-  }
+}
