@@ -1,13 +1,15 @@
 extends Node2D
 
-# TODO:
-#   overlay debug messages (distance to canyon etc)
 # Would be nice:
 #   nicer speed bar (gradient bar)
 
-# Called when the node enters the scene tree for the first time.
+@onready var info_label: Label = $TextureRect/InfoLabel;
+
+func _set_info(debug: String, distance: String, heading: String, speed: String):
+	info_label.text = debug + "\n" + distance + "\n" + heading + "\n" + speed;
+
 func _ready():
-	pass # Replace with function body.
+	$TextureRect.Info.connect(_set_info)
 
 func _input(evt):
 	if evt.is_action_pressed("ui_cancel"):

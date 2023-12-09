@@ -20,3 +20,16 @@ offset_right = 1152.0
 offset_bottom = 576.0
 texture = SubResource("ImageTexture_8judv")
 script = ExtResource("2_pjvfg")
+
+[node name="InfoLabel" type="Label" parent="TextureRect"]
+layout_mode = 0
+offset_left = 781.0
+offset_top = 13.0
+offset_right = 1141.0
+offset_bottom = 109.0
+theme_override_colors/font_color = Color(0.372549, 0.309804, 0.964706, 1)
+theme_override_font_sizes/font_size = 20
+text = "a
+b
+c
+d"
