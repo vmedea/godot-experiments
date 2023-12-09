@@ -1,0 +1,22 @@
+[gd_scene load_steps=7 format=3 uid="uid://d32ceq3ahvws1"]
+
+[ext_resource type="Script" path="res://root.gd" id="1_ekdhk"]
+[ext_resource type="Shader" path="res://screen.gdshader" id="2_axcid"]
+[ext_resource type="Script" path="res://game_texture.cs" id="2_pjvfg"]
+[ext_resource type="Texture2D" uid="uid://cqxik1hb2uo5u" path="res://palette.png" id="3_1w2kd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mkh6q"]
+shader = ExtResource("2_axcid")
+shader_parameter/palette = ExtResource("3_1w2kd")
+
+[sub_resource type="ImageTexture" id="ImageTexture_8judv"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_ekdhk")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_mkh6q")
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("ImageTexture_8judv")
+script = ExtResource("2_pjvfg")
