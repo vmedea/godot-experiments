@@ -1,4 +1,6 @@
-/* Based on code from http://bringerp.free.fr/RE/CaptainBlood/main.php5 by Kroah */
+/* Based on code from http://bringerp.free.fr/RE/CaptainBlood/main.php5 by Kroah, which is a port
+   of the fractal landscape renderer used in the Atari ST game Captain Blood. 
+ */
 using System;
 using Godot;
 
