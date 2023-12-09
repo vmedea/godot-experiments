@@ -119,8 +119,26 @@ public partial class game_texture : TextureRect
 					case Key.Space:
 						_game.fullRaytracer = !_game.fullRaytracer;
 						break;
+					case Key.V:
+						_game.view.cursorX = 110;
+						_game.view.cursorY = 56;
+						break;
+					case Key.B:
+						_game.blueRaytracer = !_game.blueRaytracer;
+						break;
+					case Key.Right:
+						_game.view.cursorX += 1;
+						break;
+					case Key.Left:
+						_game.view.cursorX -= 1;
+						break;
+					case Key.Up:
+						_game.view.heightFixed -= 0x30000;
+						break;
+					case Key.Down:
+						_game.view.heightFixed += 0x30000;
+						break;
 				}
-				GD.Print("kev", kev);
 			}
 		} else if (evt is InputEventMouseMotion mev) {
 			Vector2 diff = mev.Relative;
