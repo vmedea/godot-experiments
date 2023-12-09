@@ -4,8 +4,10 @@ extends Node2D
 @onready var speed_gauge: TextureProgressBar = $TextureRect/Speed;
 
 
-func _set_info(debug: String, distance: String, heading: String, speed: int):
-	info_label.text = debug + "\n" + distance + "\n" + heading + "\nSpeed: "
+func _set_info(debug: String, distance: String, heading: float, headingDelta: float, speed: int):
+	var headingStr := "Heading: %+.3f %+.3f" % [heading, headingDelta];
+
+	info_label.text = debug + "\n" + distance + "\n" + headingStr + "\nSpeed: "
 	speed_gauge.value = speed
 
 

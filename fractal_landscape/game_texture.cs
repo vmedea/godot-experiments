@@ -13,7 +13,7 @@ public partial class game_texture : TextureRect
 	double _speedFloat;
 		
 	[Signal]
-	public delegate void InfoEventHandler(string debug, string distance, string heading, int speed);
+	public delegate void InfoEventHandler(string debug, string distance, float heading, float headingDelta, int speed);
 	
 	public game_texture()
 	{
@@ -88,17 +88,16 @@ public partial class game_texture : TextureRect
 		// Information for HUD
 		string debug = _game.debugString;
 		string distance = "";
-		string heading = "";
-		string speed = "";
+		int speed = 0;
 		
 		if (_game.Flying_finishLineReachedUnk[0] >= 0) {
 			if (_game.Flying_finishLineReachedUnk[0] == 0)
 				distance = string.Format("Distance to start of canyon: {0}", 0x8000 - _game.Flying_distanceDone);
 			else
 				distance = string.Format("Distance to end of canyon: {0}", _game.Flying_finishLineReachedUnk [0]);
-			heading = string.Format("Heading: {0:+0.000;-0.000;0.000}^ ({1:+0.000;-0.000;0.000})", _game.view.heading / 65536.0f, (_game.headingDeltaFixed >> 8) / 256.0f);
+			speed = _game.view.speed;
 		}
-		EmitSignal(SignalName.Info, debug, distance, heading, _game.view.speed);
+		EmitSignal(SignalName.Info, debug, distance, _game.view.heading / 65536.0f, (_game.headingDeltaFixed >> 8) / 256.0f, speed);
 	}
 
 	public override void _Process(double delta)
