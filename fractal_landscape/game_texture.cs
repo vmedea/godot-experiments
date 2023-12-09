@@ -10,6 +10,7 @@ public partial class game_texture : TextureRect
 	byte [] buffer = new byte [WIDTH * HEIGHT];
 	Game _game;
 	double _frame;
+	double _speedFloat;
 		
 	[Signal]
 	public delegate void InfoEventHandler(string debug, string distance, string heading, string speed);
@@ -18,7 +19,8 @@ public partial class game_texture : TextureRect
 	{
 		_game = new Game(false);
 		_frame = 0.0;
-		_game.fullRaytracer = true;
+		_game.fullRaytracer = false;
+		_speedFloat = (double)_game.view.speed;
 	}
 	
 	public override void _Ready()
@@ -108,13 +110,35 @@ public partial class game_texture : TextureRect
 			_frame += 0.030;
 		}
 	}
-
+	
 	public override void _Input(InputEvent evt)
 	{
 		if (evt is InputEventKey kev) {
-			GD.Print("kev", kev);
+			if (kev.Pressed) {
+				switch (kev.Keycode) {
+					case Key.Space:
+						_game.fullRaytracer = !_game.fullRaytracer;
+						break;
+				}
+				GD.Print("kev", kev);
+			}
 		} else if (evt is InputEventMouseMotion mev) {
-			GD.Print("mev ", mev.Relative, " ", mev.ButtonMask);
+			Vector2 diff = mev.Relative;
+			if ((mev.ButtonMask & MouseButtonMask.Left) != 0) {
+				// Heading control.
+				_game.view.cursorX += (int)diff.X / 2;
+				_game.view.cursorY += (int)diff.Y / 2;
+			} else if ((mev.ButtonMask & MouseButtonMask.Right) != 0) {
+				// Speed control.
+				_speedFloat += diff.Y / 32.0;
+				if (_speedFloat < 0) {
+					_speedFloat = 0;
+				}
+				if (_speedFloat > 11) {
+					_speedFloat = 11;
+				}
+				_game.view.speed = (int)_speedFloat;
+			}
 		}
 	}
 }

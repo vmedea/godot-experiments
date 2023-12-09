@@ -12,8 +12,12 @@ config_version=5
 
 config/name="fractal_landscape"
 run/main_scene="res://root.tscn"
-config/features=PackedStringArray("4.2", "Mobile")
+config/features=PackedStringArray("4.2", "C#", "Mobile")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_height=576
 
 [dotnet]
 
