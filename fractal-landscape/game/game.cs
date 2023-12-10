@@ -106,7 +106,10 @@ public class Game {
 	public void Ship_Land_Init() {
 		//_data = new byte [4 * 4608];
 		for (int i = 0; i < View_curves.Length; i += 4) {
-			View_curves.WriteLong(i, 0x01344224);
+			View_curves[i + 0] = 0x01;
+			View_curves[i + 1] = 0x34;
+			View_curves[i + 2] = 0x42;
+			View_curves[i + 3] = 0x24;
 		}
 
 		RandomXXXX_seed = 0x4D83;
@@ -324,10 +327,6 @@ public class Game {
 		if (!fullRaytracer) {
 			// 10 segments
 			do {
-				//if (Flying_distanceDone == 0x6F00) {
-				//  DumpViewHeights();
-				//  //View_curvesY.WriteToFile ("70400 VS.dmp");
-				//}
 				View_DrawNextSegment();
 				view.distanceToLastSegment += 50;
 			} while (view.distanceToLastSegment <= 500);
@@ -339,12 +338,10 @@ public class Game {
 	}
 
 	public void View_DrawNextSegment() {
-		//DumpViewHeights();
 		int curveOffset = (int) (View_segmentsCurveOffsetFixed[view.lastSegmentIndex_x4] >> 16);
 		int curveOffsetFixedPart = (int) (View_segmentsCurveOffsetFixed[view.lastSegmentIndex_x4] & 0xFFFF);
 		view.lastSegmentIndex_x4 = (view.lastSegmentIndex_x4 + 1) % 64;
 		View_DrawSegment(View_curves, curveOffset, curveOffsetFixedPart);
-		//DumpViewHeights();
 	}
 
 	public void View_DrawSegment(byte [] curve, int curveOffset, int curveOffsetFixedPart) {
@@ -516,7 +513,6 @@ public class Game {
 	}
 
 	public void Raytracer_InitDraw() {
-		//View_curvesY.WriteToFile("70400 VS.dmp");
 		//View_offsetToStartOfLine
 
 		View_InitHeights();
@@ -534,7 +530,6 @@ public class Game {
 		Raytracer_InitHeight();
 		for (int i = 0; i < screen.Length; i++)
 			screen[i] = 0;
-		//View_curvesY.WriteToFile("CurveY VS.dmp");
 
 		//int curveOffset = (int) (View_segmentsOffsetFixed[view.lastSegmentIndex_x4] >> 16);
 		//int curveOffsetFixedPart = (int) (View_segmentsOffsetFixed [view.lastSegmentIndex_x4] & 0xFFFF);
@@ -547,7 +542,6 @@ public class Game {
 			//if (view.lastSegmentIndex_x4 == view.firstSegmentIndex_x4)
 			//  debugString += string.Format("{0:X4} ", curveOffsetFixedPart);
 			Raytracer_NextBetween2Segments();
-			//Raytracer_curve.WriteToFile("Raytracer_curve VS.dmp");
 
 			// Classic
 			int curveOffset = 0;
@@ -695,7 +689,6 @@ public class Game {
 				if ((height >= 1) && (height <= 127)) {
 					// If2
 					if ((d5 >= 0) && (word_1CE80 >= 0)) {
-						//DumpRaytracer();
 						//d5 += ((word_1CE80 - d5) >> 1) + (((word_1CE80 - d5) < 0) ? 0x8000 : 0);
 						d5 += ((word_1CE80 - d5) >> 1);
 					}
@@ -872,8 +865,6 @@ public class Game {
 		distanceDelta += 64;
 		Flying_distanceDone += distanceDelta << 2;
 		if (Flying_distanceDone >= 0x8000) {
-			//DumpCurveY();
-			//View_curvesY.WriteToFile("70400 VS.dmp");
 			Flying_CanyonReached(distanceDelta, d3);
 			return;
 		}
@@ -903,7 +894,6 @@ public class Game {
 		Flying_distanceDone -= 0x8000;
 		word_1C770 = distanceDelta;
 		Flying_InitCanyon(d3);
-		//View_curvesY.WriteToFile("70400 VS.dmp");
 	}
 
 	public void Flying_InitCanyon(int d3) {
@@ -1086,36 +1076,6 @@ public class Game {
 		for (int i = 0; i < 256; i++) {
 			Raytracer_heights[i] = 127;
 		}
-	}
-
-	public void DumpViewHeights() {
-		//int baz = 128;
-		int baz = 0;
-		byte [] temp = new byte [View_heights.Length * 2 - baz * 2];
-		for (int i = 0; i < View_heights.Length - baz; i++) {
-			temp[i * 2] = (byte) (View_heights[i] >> 8);
-			temp[i * 2 + 1] = (byte) (View_heights[i] & 0xFF);
-		}
-		Console.WriteLine(ExtensionByte.Dump(temp, 0, temp.Length, 0x1D542 + baz * 2, 2, 8, true));
-	}
-
-	public void DumpCurveY() {
-		//byte [] temp = new byte [View_heights.Length * 2 - baz * 2];
-		//for (int i = 0; i < View_heights.Length - baz; i++) {
-		//  temp[i * 2] = (byte) (View_heights[i] >> 8);
-		//  temp[i * 2 + 1] = (byte) (View_heights[i] & 0xFF);
-		//}
-		Console.WriteLine(ExtensionByte.Dump(View_curves, 0, View_curves.Length, 0x70400, 2, 8, true));
-	}
-
-	public void DumpRaytracer() {
-		Console.WriteLine(string.Format("     {0:X4}", word_1CE80));
-		Console.WriteLine(string.Format("{0:X4} {1:X4}", dword_1CE82 >> 16, dword_1CE82 & 0xFFFF));
-		Console.WriteLine(string.Format("{0:X4} {1:X4}", dword_1CE86 >> 16, dword_1CE86 & 0xFFFF));
-		Console.WriteLine(string.Format("{0:X4} {1:X4}", dword_1CE8A >> 16, dword_1CE8A & 0xFFFF));
-		Console.WriteLine(string.Format("{0:X4} {1:X4}", dword_1CE8E >> 16, dword_1CE8E & 0xFFFF));
-		Console.WriteLine(string.Format("{0:X4} {1:X4}", dword_1CE92 >> 16, dword_1CE92 & 0xFFFF));
-		Console.WriteLine(string.Format("{0:X4} {1:X4}", dword_1CE96 >> 16, dword_1CE96 & 0xFFFF));
 	}
 	#endregion
 
