@@ -622,10 +622,9 @@ public class Game {
 
 	public void Raytracer_DoHorizontalBand() {
 		int a5 = sub_1CEF8(24); // ou 32 si defenses
-		int viewHeightsOffsets = 255;
-		int bufferUnk02Offset = 256;
+		int viewHeightsOffset = 255;
 		int yBase = 18;
-		int x = 17 * 16 + 14;
+		int x = 320 - 34;
 
 		word_1CE80 = 5;
 		dword_1CE82 = 0x007F0000;
@@ -637,23 +636,22 @@ public class Game {
 		//dword_1CE96 &= 0x0000FFFF; // right not initialized
 		dword_1CE96 = 0x00000000;
 
-		int d5 = sub_1CE9E(View_heights[viewHeightsOffsets], a5);
-		viewHeightsOffsets++;
+		int d5 = sub_1CE9E(View_heights[viewHeightsOffset], a5);
+		viewHeightsOffset++;
 
 		// 1CDB6
 		for (int i = 0; i < 255; i++) {
-			viewHeightsOffsets--;
-			int d0 = View_heights[viewHeightsOffsets];
+			viewHeightsOffset--;
+			int d0 = View_heights[viewHeightsOffset];
 			d5 = sub_1CE9E(d0, a5);
 
-			bufferUnk02Offset--;
-			if (d0 < Raytracer_heights[bufferUnk02Offset]) {
+			if (d0 < Raytracer_heights[viewHeightsOffset]) {
 				// If1
 				if (d0 > 128)
 					throw new Exception();
 				if (d0 < 0)
 					d0 = 0;
-				int height = Raytracer_heights[bufferUnk02Offset] - View_heights[viewHeightsOffsets];
+				int height = Raytracer_heights[viewHeightsOffset] - View_heights[viewHeightsOffset];
 				//height--;
 				if ((height >= 1) && (height <= 127)) {
 					// If2
@@ -682,7 +680,7 @@ public class Game {
 						y += 1;
 					}
 				} // Endif2
-				Raytracer_heights[bufferUnk02Offset] = View_heights[viewHeightsOffsets];
+				Raytracer_heights[viewHeightsOffset] = View_heights[viewHeightsOffset];
 			} // Endif1
 
 			x -= 1;
@@ -695,7 +693,7 @@ public class Game {
 			dword_1CE92 += 0x4000;
 			dword_1CE96 += 0x2F000;
 
-			View_heights[viewHeightsOffsets] = 127;
+			View_heights[viewHeightsOffset] = 127;
 		}
 	}
 
