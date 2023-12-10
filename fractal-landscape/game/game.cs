@@ -346,7 +346,7 @@ public class Game {
 
 	public void View_DrawSegment(byte [] curve, int curveOffset, int curveOffsetFixedPart) {
 		int viewHeightsOffset = 0;
-		int pDstOffset = 28;
+		int pDstOffset = 14;
 		int bitToSet = 1;
 		int depthFactorFixed = 0xFF00 / view.distanceToLastSegment;
 
@@ -358,7 +358,7 @@ public class Game {
 		// Horizontal displacement from horizontal position (move left/right)
 		int xPixelDelta = ((curveOffsetFixedPart * depthFactorFixed) >> 16) >> 8;
 		viewHeightsOffset -= xPixelDelta;
-		pDstOffset -= (xPixelDelta >> 2) & 0xFFFC;
+		pDstOffset -= (xPixelDelta >> 3) & 0xFFFE;
 		bitToSet <<= xPixelDelta & 0xF;
 
 		// Set at middle of the view
@@ -396,19 +396,19 @@ public class Game {
 					if (yPixel <= View_heights[viewHeightsOffsetBase + viewHeightsOffset]) {
 						View_heights[viewHeightsOffsetBase + viewHeightsOffset] = yPixel;
 						if (yPixel >= 0) {
-							viewGfx[(pDstOffset + yPixel * 64) >> 1] |= (ushort)bitToSet;
+							viewGfx[pDstOffset + yPixel * 32] |= (ushort)bitToSet;
 						}
 					}
 					if (doRight) {
 						viewHeightsOffset++;
 						ROR_w (1, ref bitToSet);
 						if ((bitToSet & 0x8000) != 0)
-							pDstOffset += 4;
+							pDstOffset += 2;
 					} else {
 						viewHeightsOffset--;
 						ROL_w (1, ref bitToSet);
 						if ((bitToSet & 0x0001) != 0)
-							pDstOffset -= 4;
+							pDstOffset -= 2;
 					}
 					yPixelFixedTemp += d1;
 					remainingWidthFixed -= 0x0100;
@@ -422,26 +422,26 @@ public class Game {
 				yPixelFixed += (d1 >> 8) * widthFixed;
 			} else { // Horizontal line
 				int yPixel = yPixelFixed >> 16;
-				int pixelOffset = yPixel * 64;
+				int pixelOffset = yPixel * 32;
 				if (curve [(curveOffset + 0x4000) & 0x3FFF] <= waterLevel) // 28
-					pixelOffset += 2; // color light blue for "water"
+					pixelOffset += 1; // color light blue for "water"
 				for (; ; ) {
 					if (yPixel < View_heights[viewHeightsOffsetBase + viewHeightsOffset]) {
 						View_heights[viewHeightsOffsetBase + viewHeightsOffset] = yPixel;
 						if (yPixel >= 0) {
-							viewGfx[(pDstOffset + pixelOffset) >> 1] |= (ushort) bitToSet;
+							viewGfx[pDstOffset + pixelOffset] |= (ushort) bitToSet;
 						}
 					}
 					if (doRight) {
 						viewHeightsOffset++;
 						ROR_w (1, ref bitToSet);
 						if ((bitToSet & 0x8000) != 0)
-							pDstOffset += 4;
+							pDstOffset += 2;
 					} else {
 						viewHeightsOffset--;
 						ROL_w (1, ref bitToSet);
 						if ((bitToSet & 0x0001) != 0)
-							pDstOffset -= 4;
+							pDstOffset -= 2;
 					}
 					remainingWidthFixed -= 0x0100;
 					if ((nbPixelsWidthToDraw == 0) || (remainingWidthFixed < 0))
@@ -472,10 +472,10 @@ public class Game {
 				if (yPixel < View_heights[viewHeightsOffsetBase + viewHeightsOffset]) {
 					View_heights[viewHeightsOffsetBase + viewHeightsOffset] = yPixel;
 					if (yPixel >= 0) {
-						int pixelOffset = yPixel * 64;
+						int pixelOffset = yPixel * 32;
 						if (curve[(curveOffset + 0x4000) & 0x3FFF] <= 28)
-							pixelOffset += 2; // color light blue for "water"
-						viewGfx[(pDstOffset + pixelOffset) >> 1] |= (ushort)bitToSet;
+							pixelOffset += 1; // color light blue for "water"
+						viewGfx[pDstOffset + pixelOffset] |= (ushort)bitToSet;
 					}
 				}
 			}
@@ -485,12 +485,12 @@ public class Game {
 				viewHeightsOffset++;
 				ROR_w (1, ref bitToSet);
 				if ((bitToSet & 0x8000) != 0)
-					pDstOffset += 4;
+					pDstOffset += 2;
 			} else {
 				viewHeightsOffset--;
 				ROL_w (1, ref bitToSet);
 				if ((bitToSet & 0x0001) != 0)
-					pDstOffset -= 4;
+					pDstOffset -= 2;
 			}
 			remainingWidthFixed -= 0x0100;
 
@@ -653,7 +653,7 @@ public class Game {
 		int a5 = sub_1CEF8(24); // ou 32 si defenses
 		int viewHeightsOffsets = 127;
 		int bufferUnk02Offset = 256;
-		int screenOffset = 0xBC8;
+		int screenOffset = 0xBC8 / 2;
 
 		word_1CE80 = 5;
 		dword_1CE82 = 0x007F0000;
@@ -682,7 +682,7 @@ public class Game {
 					throw new Exception();
 				if (d0 < 0)
 					d0 = 0;
-				int offsetToStartOfLine = d0 * 160;
+				int offsetToStartOfLine = d0 * 80;
 				int pDst = screenOffset + offsetToStartOfLine;
 				int height = Raytracer_heights[bufferUnk02Offset] - View_heights[viewHeightsOffsetBase + viewHeightsOffsets];
 				//height--;
@@ -696,22 +696,20 @@ public class Game {
 					int d1 = d5;
 
 					for (int j = 0; j < height; j++) {
-						d6 ^= 0xFFFF;
-						screen[(pDst + 0) >> 1] = (ushort)(screen[(pDst + 0) >> 1] & d6);
-						screen[(pDst + 2) >> 1] = (ushort)(screen[(pDst + 2) >> 1] & d6);
-						screen[(pDst + 4) >> 1] = (ushort)(screen[(pDst + 4) >> 1] & d6);
-						screen[(pDst + 6) >> 1] = (ushort)(screen[(pDst + 6) >> 1] & d6);
-						d6 ^= 0xFFFF;
+						screen[pDst + 0] = (ushort)(screen[pDst + 0] & ~d6);
+						screen[pDst + 1] = (ushort)(screen[pDst + 1] & ~d6);
+						screen[pDst + 2] = (ushort)(screen[pDst + 2] & ~d6);
+						screen[pDst + 3] = (ushort)(screen[pDst + 3] & ~d6);
 
 						if (d5 != 0) {
 							// If3
-							screen[(pDst + 6) >> 1] = (ushort)(screen[(pDst + 6) >> 1] | d6);
+							screen[pDst + 3] = (ushort)(screen[pDst + 3] | d6);
 							if ((d5 & 0x01) != 0)
-								screen[(pDst + 0) >> 1] = (ushort)(screen[(pDst + 0) >> 1] | d6);
+								screen[pDst + 0] = (ushort)(screen[pDst + 0] | d6);
 							if ((d5 & 0x02) != 0)
-								screen[(pDst + 2) >> 1] = (ushort)(screen[(pDst + 2) >> 1] | d6);
+								screen[pDst + 1] = (ushort)(screen[pDst + 1] | d6);
 							if ((d5 & 0x04) != 0)
-								screen[(pDst + 4) >> 1] = (ushort)(screen[(pDst + 4) >> 1] | d6);
+								screen[pDst + 2] = (ushort)(screen[pDst + 2] | d6);
 						} // Endif3
 
 						d1--;
@@ -721,7 +719,7 @@ public class Game {
 								d1 = d5;
 							}
 						}
-						pDst += 160;
+						pDst += 80;
 					}
 				} // Endif2
 				Raytracer_heights[bufferUnk02Offset] = View_heights [viewHeightsOffsetBase + viewHeightsOffsets];
@@ -729,7 +727,7 @@ public class Game {
 
 			ROL_w (1, ref d6);
 			if ((d6 & 0x0001) != 0)
-				screenOffset -= 8;
+				screenOffset -= 4;
 
 			d0 = 0;
 			dword_1CE82 += 0xB000;
