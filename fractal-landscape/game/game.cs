@@ -9,7 +9,7 @@ public class Game {
 	public bool _descending;
 
 	public byte [] _data;
-	public ushort [] viewGfx;
+	public byte [] viewGfx = new byte [256 * 128];
 	public View view;
 	public long RandomXXXX_seed;
 	public int Flying_distanceDone;
@@ -88,12 +88,6 @@ public class Game {
 		//View_bufferUnk01 = new int [128];
 		View_heights = new int [128 + 128];
 		Raytracer_heights = new int [256];
-
-		//2 bpp
-		//256*128 pixels = 64*128 bytes = 8192 bytes
-		//1 line = 256 pixels = 64 bytes
-		//1 byte = 4 pixels 
-		viewGfx = new ushort [256 * 128];
 
 		_descending = false;
 		Ship_Land_Init();
@@ -339,13 +333,7 @@ public class Game {
 
 	private void View_SetPixel(int x, int y, int color) {
 		if (x >= 0 && y >= 0 && x <= 255 && y <= 127) {
-			ushort bitToSet = (ushort)(1 << (0xf - (x & 0xf)));
-			viewGfx[(y * 16 + (x >> 4)) * 2 + 0] &= (ushort)~bitToSet;
-			viewGfx[(y * 16 + (x >> 4)) * 2 + 1] &= (ushort)~bitToSet;
-			if ((color & 1) != 0)
-				viewGfx[(y * 16 + (x >> 4)) * 2 + 0] |= bitToSet;
-			if ((color & 2) != 0)
-				viewGfx[(y * 16 + (x >> 4)) * 2 + 1] |= bitToSet;
+			viewGfx[y * 256 + x] = (byte)color;
 		}
 	}
 

@@ -39,20 +39,7 @@ public partial class game_texture : TextureRect
 		// XXX show both?
 		// would need to factor this out to a GameModel class that provides two textures, or make one big buffer, of say, 256x256
 		if (blue) {
-			// Two interpeaved bitplanes, 256x128
-			const int planes = 2;
-			const int stride = WIDTH / 16 * planes;
-			int ptr = 0;
-			for (int y=0; y < HEIGHT; ++y) {
-				for (int x=0; x < WIDTH; ++x) {
-					int in_ofs = y * stride + (x >> 4) * planes;
-					int in_bit = 15 - (x & 0xf);
-					int idx = ((_game.viewGfx[in_ofs + 0] >> (in_bit)) & 1) | 
-							  (((_game.viewGfx[in_ofs + 1] >> (in_bit)) & 1) << 1);
-					buffer[ptr] = (byte)idx;
-					ptr += 1;
-				}
-			}
+			buffer = _game.viewGfx;
 		} else {
 			// Four interleaved bitplanes, 320x200 (extract a 256x128 area)
 			const int xofs = 32;
