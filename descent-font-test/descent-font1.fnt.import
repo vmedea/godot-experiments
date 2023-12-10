@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://cpn3biqdeokmg"
+path="res://.godot/imported/descent-font1.fnt-7e5d4c02cd246642ce4b1607c90a4504.fontdata"
+
+[deps]
+
+source_file="res://descent-font1.fnt"
+dest_files=["res://.godot/imported/descent-font1.fnt-7e5d4c02cd246642ce4b1607c90a4504.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2

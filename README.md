@@ -5,6 +5,11 @@ A random collection of experiments with Godot 4.
 Port in progress of the isometric Atari ST game airball using Godot 4's tilemap
 system, based on the 25th anniversary edition remake by Clement CORDE.
 
+## descent-font-test
+
+This was an experiment how the `.fnt` (BMFont) font format works in Godot,
+carving up an RGB image into font glyphs.
+
 ## fractal-landscape
 
 An experiment with using Godot with the C# language. Based on code from
