@@ -9,7 +9,7 @@ public class Game {
 	public bool _descending;
 
 	public byte [] _data;
-	public byte [] viewGfx;
+	public ushort [] viewGfx;
 	public View view;
 	public long RandomXXXX_seed;
 	public int Flying_distanceDone;
@@ -93,7 +93,7 @@ public class Game {
 		//256*128 pixels = 64*128 bytes = 8192 bytes
 		//1 line = 256 pixels = 64 bytes
 		//1 byte = 4 pixels 
-		viewGfx = new byte [256 * 128];
+		viewGfx = new ushort [256 * 128];
 
 		_descending = false;
 		Ship_Land_Init();
@@ -399,8 +399,7 @@ public class Game {
 					if (yPixel <= View_heights[viewHeightsOffsetBase + viewHeightsOffset]) {
 						View_heights[viewHeightsOffsetBase + viewHeightsOffset] = yPixel;
 						if (yPixel >= 0) {
-							viewGfx[pDstOffset + yPixel * 64] |= (byte) (bitToSet >> 8);
-							viewGfx[pDstOffset + yPixel * 64 + 1] |= (byte) (bitToSet & 0xFF);
+							viewGfx[(pDstOffset + yPixel * 64) >> 1] |= (ushort)bitToSet;
 						}
 					}
 					if (doRight) {
@@ -433,8 +432,7 @@ public class Game {
 					if (yPixel < View_heights[viewHeightsOffsetBase + viewHeightsOffset]) {
 						View_heights[viewHeightsOffsetBase + viewHeightsOffset] = yPixel;
 						if (yPixel >= 0) {
-							viewGfx[pDstOffset + pixelOffset] |= (byte) (bitToSet >> 8);
-							viewGfx[pDstOffset + pixelOffset + 1] |= (byte) (bitToSet & 0xFF);
+							viewGfx[(pDstOffset + pixelOffset) >> 1] |= (ushort) bitToSet;
 						}
 					}
 					if (doRight) {
@@ -480,8 +478,7 @@ public class Game {
 						int pixelOffset = yPixel * 64;
 						if (curve[(curveOffset + 0x4000) & 0x3FFF] <= 28)
 							pixelOffset += 2; // color light blue for "water"
-						viewGfx[pDstOffset + pixelOffset] |= (byte) (bitToSet >> 8);
-						viewGfx[pDstOffset + pixelOffset + 1] |= (byte) (bitToSet & 0xFF);
+						viewGfx[(pDstOffset + pixelOffset) >> 1] |= (ushort)bitToSet;
 					}
 				}
 			}
