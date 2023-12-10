@@ -24,7 +24,7 @@ public class Game {
 
 	//public int [] View_bufferUnk01;
 	public int [] View_heights;
-	public int viewHeightsOffsetBase = 128;
+	public const int viewHeightsOffsetBase = 128;
 	public int [] Raytracer_heights;
 
 	public int RandomXXXX_seed02;
@@ -346,8 +346,8 @@ public class Game {
 
 	public void View_DrawSegment(byte [] curve, int curveOffset, int curveOffsetFixedPart) {
 		int viewHeightsOffset = 0;
-		int pDstOffset = 14;
-		int bitToSet = 1;
+		int pDstOffset = 7 * 2; // x offset 112
+		int bitToSet = 1; // 112+15 = 127, begin at middle of screen
 		int depthFactorFixed = 0xFF00 / view.distanceToLastSegment;
 
 		if (depthFactorFixed <= 0x00FF) {
