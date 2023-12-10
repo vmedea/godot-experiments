@@ -8,21 +8,11 @@
 
 config_version=5
 
-_global_script_classes=[{
-"base": "RefCounted",
-"class": &"GameRoom",
-"language": &"GDScript",
-"path": "res://GameRoom.gd"
-}]
-_global_script_class_icons={
-"GameRoom": ""
-}
-
 [application]
 
 config/name="airball"
 run/main_scene="res://scenes/gameplay.tscn"
-config/features=PackedStringArray("4.0", "Mobile")
+config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -35,7 +25,11 @@ window/size/viewport_width=320
 window/size/viewport_height=240
 window/stretch/mode="viewport"
 
+[dotnet]
+
+project/assembly_name="airball"
+
 [rendering]
 
-renderer/rendering_method="mobile"
 textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="mobile"
