@@ -41,14 +41,6 @@ public class Game {
 	public byte [] Raytracer_curve = new byte [256 * 51 + 1];
 	public int Raytracer_curveBaseOffset = 384;
 
-	public int word_1CE80;
-	public long dword_1CE82;
-	public long dword_1CE86;
-	public long dword_1CE8A;
-	public long dword_1CE8E;
-	public long dword_1CE92;
-	public long dword_1CE96;
-
 	public delegate int Delegate_Curve_RandomXXXX(ref bool X, int d2, int d4, int d6);
 	public delegate void Delegate_Flying_InitCurveSegment(int d3);
 	
@@ -107,7 +99,6 @@ public class Game {
 
 		RandomXXXX_seed = 0x4D83;
 		RandomXXXX_seed += 0x70000;
-		dword_1CE96 = 0x0000A000; // A000 not initialized
 
 		Flying_distanceDone = 0;
 		p5FunctionsRandomlyChosen = new Delegate_Curve_RandomXXXX [4];
@@ -620,30 +611,72 @@ public class Game {
 		RandomXXXX_seed02 = seedBackup;
 	}
 
+	private class RaytraceState {
+		public long dword_1CE82 = 0x007F0000;
+		public long dword_1CE86 = 0x007F0000;
+		public long dword_1CE8A = 0x007F0000;
+		public long dword_1CE8E = 0x007F0000;
+		public long dword_1CE92 = 0x007F007F;
+		public long dword_1CE96 = 0x00000000;
+
+		public int sub_1CE9E(int d0, int a5) {
+			int d5 = 6;
+			if (d0 <= (dword_1CE82 >> 16))
+				dword_1CE82 = (d0 << 16) + (dword_1CE82 & 0xFFFF);
+			else
+				d5--;
+			if (d0 <= (dword_1CE86 >> 16))
+				dword_1CE86 = (d0 << 16) + (dword_1CE86 & 0xFFFF);
+			else
+				d5--;
+			if (d0 <= (dword_1CE8A >> 16))
+				dword_1CE8A = (d0 << 16) + (dword_1CE8A & 0xFFFF);
+			else
+				d5--;
+			if (d0 <= (dword_1CE8E >> 16))
+				dword_1CE8E = (d0 << 16) + (dword_1CE8E & 0xFFFF);
+			else
+				d5--;
+			if (d0 <= (dword_1CE92 >> 16))
+				dword_1CE92 = (d0 << 16) + (dword_1CE92 & 0xFFFF);
+			else
+				d5--;
+			if (d0 <= (dword_1CE96 >> 16))
+				dword_1CE96 = (d0 << 16) + (dword_1CE96 & 0xFFFF);
+			else
+				d5--;
+			if (d0 >= a5) {
+				d5 = -256;
+			}
+			return (d5);
+		}
+
+		public void Next() {
+			dword_1CE82 += 0xB000;
+			dword_1CE86 += 0x9000;
+			dword_1CE8A += 0x7000;
+			dword_1CE8E += 0x6000;
+			dword_1CE92 += 0x4000;
+			dword_1CE96 += 0x2F000;
+		}
+	}
+
 	public void Raytracer_DoHorizontalBand() {
 		int a5 = sub_1CEF8(24); // ou 32 si defenses
 		int viewHeightsOffset = 255;
 		int yBase = 18;
 		int x = 320 - 34;
+		RaytraceState rs = new RaytraceState();
+		int word_1CE80 = 5;
 
-		word_1CE80 = 5;
-		dword_1CE82 = 0x007F0000;
-		dword_1CE86 = 0x007F0000;
-		dword_1CE8A = 0x007F0000;
-		dword_1CE8E = 0x007F0000;
-		dword_1CE92 = 0x007F007F;
-		// Vanilla
-		//dword_1CE96 &= 0x0000FFFF; // right not initialized
-		dword_1CE96 = 0x00000000;
-
-		int d5 = sub_1CE9E(View_heights[viewHeightsOffset], a5);
+		int d5 = rs.sub_1CE9E(View_heights[viewHeightsOffset], a5);
 		viewHeightsOffset++;
 
 		// 1CDB6
 		for (int i = 0; i < 255; i++) {
 			viewHeightsOffset--;
 			int d0 = View_heights[viewHeightsOffset];
-			d5 = sub_1CE9E(d0, a5);
+			d5 = rs.sub_1CE9E(d0, a5);
 
 			if (d0 < Raytracer_heights[viewHeightsOffset]) {
 				// If1
@@ -684,19 +717,14 @@ public class Game {
 			} // Endif1
 
 			x -= 1;
-
 			d0 = 0;
-			dword_1CE82 += 0xB000;
-			dword_1CE86 += 0x9000;
-			dword_1CE8A += 0x7000;
-			dword_1CE8E += 0x6000;
-			dword_1CE92 += 0x4000;
-			dword_1CE96 += 0x2F000;
+			rs.Next();
 
 			View_heights[viewHeightsOffset] = 127;
 		}
 	}
 
+	// "Water" level
 	public int sub_1CEF8(int d0) {
 		d0 <<= 16;
 		int d6 = 0xFF00 / view.distanceToLastSegment;
@@ -705,38 +733,6 @@ public class Game {
 		return (d1);
 	}
 
-	public int sub_1CE9E(int d0, int a5) {
-		int d5 = 6;
-		if (d0 <= (dword_1CE82 >> 16))
-			dword_1CE82 = (d0 << 16) + (dword_1CE82 & 0xFFFF);
-		else
-			d5--;
-		if (d0 <= (dword_1CE86 >> 16))
-			dword_1CE86 = (d0 << 16) + (dword_1CE86 & 0xFFFF);
-		else
-			d5--;
-		if (d0 <= (dword_1CE8A >> 16))
-			dword_1CE8A = (d0 << 16) + (dword_1CE8A & 0xFFFF);
-		else
-			d5--;
-		if (d0 <= (dword_1CE8E >> 16))
-			dword_1CE8E = (d0 << 16) + (dword_1CE8E & 0xFFFF);
-		else
-			d5--;
-		if (d0 <= (dword_1CE92 >> 16))
-			dword_1CE92 = (d0 << 16) + (dword_1CE92 & 0xFFFF);
-		else
-			d5--;
-		if (d0 <= (dword_1CE96 >> 16))
-			dword_1CE96 = (d0 << 16) + (dword_1CE96 & 0xFFFF);
-		else
-			d5--;
-		if (d0 >= a5) {
-			d5 = -256;
-		}
-		return (d5);
-	}
-	
 	public void Flying_InitCurveSegment_LandFast(int d3) {
 		view.heightGoal = 240;
 		view.heading = 0;
