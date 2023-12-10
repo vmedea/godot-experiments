@@ -58,16 +58,16 @@ public partial class game_texture : TextureRect
 			const int xofs = 32;
 			const int yofs = 18;
 			const int planes = 4;
-			const int stride = 320 / 8 * planes;
+			const int stride = 320 / 16 * planes;
 			int ptr = 0;
 			for (int y=yofs; y < (yofs + HEIGHT); ++y) {
 				for (int x=xofs; x < (xofs + WIDTH); ++x) {
-					int in_ofs = y * stride + (x >> 4) * 2 * planes + ((x >> 3) & 1);
-					int in_bit = 7 - (x & 0x7);
+					int in_ofs = y * stride + (x >> 4) * planes;
+					int in_bit = 15 - (x & 0xf);
 					int idx = ((_game.screen[in_ofs + 0] >> (in_bit)) & 1) | 
-							  (((_game.screen[in_ofs + 2] >> (in_bit)) & 1) << 1) |
-							  (((_game.screen[in_ofs + 4] >> (in_bit)) & 1) << 2) |
-							  (((_game.screen[in_ofs + 6] >> (in_bit)) & 1) << 3);
+							  (((_game.screen[in_ofs + 1] >> (in_bit)) & 1) << 1) |
+							  (((_game.screen[in_ofs + 2] >> (in_bit)) & 1) << 2) |
+							  (((_game.screen[in_ofs + 3] >> (in_bit)) & 1) << 3);
 					buffer[ptr] = (byte) idx;
 					ptr += 1;
 				}

@@ -34,7 +34,7 @@ public class Game {
 	public int word_1C76E;
 
 	// Raytracer
-	public byte [] screen = new byte [32000];
+	public ushort [] screen = new ushort [16000];
 
 	public int Raytracer_segmentsBandInfoIndex;
 	public int Raytracer_distanceBetween2Bands;
@@ -532,7 +532,8 @@ public class Game {
 		imageRaytracer = true;
 		Raytracer_segmentsBandInfoIndex = 0;
 		Raytracer_InitHeight();
-		screen.Init(0);
+		for (int i = 0; i < screen.Length; i++)
+			screen[i] = 0;
 		//View_curvesY.WriteToFile("CurveY VS.dmp");
 
 		//int curveOffset = (int) (View_segmentsOffsetFixed[view.lastSegmentIndex_x4] >> 16);
@@ -703,21 +704,21 @@ public class Game {
 
 					for (int j = 0; j < height; j++) {
 						d6 ^= 0xFFFF;
-						screen.WriteWord(pDst + 0, screen.ReadWord(pDst + 0) & d6);
-						screen.WriteWord(pDst + 2, screen.ReadWord(pDst + 2) & d6);
-						screen.WriteWord(pDst + 4, screen.ReadWord(pDst + 4) & d6);
-						screen.WriteWord(pDst + 6, screen.ReadWord(pDst + 6) & d6);
+						screen[(pDst + 0) >> 1] = (ushort)(screen[(pDst + 0) >> 1] & d6);
+						screen[(pDst + 2) >> 1] = (ushort)(screen[(pDst + 2) >> 1] & d6);
+						screen[(pDst + 4) >> 1] = (ushort)(screen[(pDst + 4) >> 1] & d6);
+						screen[(pDst + 6) >> 1] = (ushort)(screen[(pDst + 6) >> 1] & d6);
 						d6 ^= 0xFFFF;
 
 						if (d5 != 0) {
 							// If3
-							screen.WriteWord(pDst + 6, screen.ReadWord(pDst + 6) | d6);
+							screen[(pDst + 6) >> 1] = (ushort)(screen[(pDst + 6) >> 1] | d6);
 							if ((d5 & 0x01) != 0)
-								screen.WriteWord(pDst + 0, screen.ReadWord(pDst + 0) | d6);
+								screen[(pDst + 0) >> 1] = (ushort)(screen[(pDst + 0) >> 1] | d6);
 							if ((d5 & 0x02) != 0)
-								screen.WriteWord(pDst + 2, screen.ReadWord(pDst + 2) | d6);
+								screen[(pDst + 2) >> 1] = (ushort)(screen[(pDst + 2) >> 1] | d6);
 							if ((d5 & 0x04) != 0)
-								screen.WriteWord(pDst + 4, screen.ReadWord(pDst + 4) | d6);
+								screen[(pDst + 4) >> 1] = (ushort)(screen[(pDst + 4) >> 1] | d6);
 						} // Endif3
 
 						d1--;
