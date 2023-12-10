@@ -34,7 +34,7 @@ public class Game {
 	public int word_1C76E;
 
 	// Raytracer
-	public ushort [] screen = new ushort [16000];
+	public byte [] screen = new byte [320 * 200];
 
 	public int Raytracer_segmentsBandInfoIndex;
 	public int Raytracer_distanceBetween2Bands;
@@ -526,7 +526,7 @@ public class Game {
 				View_DrawSegment(Raytracer_curve, Raytracer_curveBaseOffset + curveOffset, curveOffsetFixedPart);
 
 				if (!blueRaytracer)
-					Raytracer_DoHoritontalBand();
+					Raytracer_DoHorizontalBand();
 				curveOffset += 256;
 				view.distanceToLastSegment += Raytracer_distanceBetween2Bands;
 				// Vanilla: 450, changed because switching from blue to raytracer caused bug
@@ -621,11 +621,12 @@ public class Game {
 		RandomXXXX_seed02 = seedBackup;
 	}
 
-	public void Raytracer_DoHoritontalBand() {
+	public void Raytracer_DoHorizontalBand() {
 		int a5 = sub_1CEF8(24); // ou 32 si defenses
 		int viewHeightsOffsets = 127;
 		int bufferUnk02Offset = 256;
-		int screenOffset = 0xBC8 / 2;
+		int yBase = 18;
+		int x = 17 * 16 + 14;
 
 		word_1CE80 = 5;
 		dword_1CE82 = 0x007F0000;
@@ -640,7 +641,6 @@ public class Game {
 		int d5 = sub_1CE9E(View_heights[viewHeightsOffsetBase + viewHeightsOffsets], a5);
 		viewHeightsOffsets++;
 
-		int d6 = 2;
 		// 1CDB6
 		for (int i = 0; i < 255; i++) {
 			viewHeightsOffsets--;
@@ -654,8 +654,6 @@ public class Game {
 					throw new Exception();
 				if (d0 < 0)
 					d0 = 0;
-				int offsetToStartOfLine = d0 * 80;
-				int pDst = screenOffset + offsetToStartOfLine;
 				int height = Raytracer_heights[bufferUnk02Offset] - View_heights[viewHeightsOffsetBase + viewHeightsOffsets];
 				//height--;
 				if ((height >= 1) && (height <= 127)) {
@@ -667,22 +665,13 @@ public class Game {
 					word_1CE80 = d5;
 					int d1 = d5;
 
+					int y = yBase + d0;
 					for (int j = 0; j < height; j++) {
-						screen[pDst + 0] = (ushort)(screen[pDst + 0] & ~d6);
-						screen[pDst + 1] = (ushort)(screen[pDst + 1] & ~d6);
-						screen[pDst + 2] = (ushort)(screen[pDst + 2] & ~d6);
-						screen[pDst + 3] = (ushort)(screen[pDst + 3] & ~d6);
-
+						int color = 0;
 						if (d5 != 0) {
-							// If3
-							screen[pDst + 3] = (ushort)(screen[pDst + 3] | d6);
-							if ((d5 & 0x01) != 0)
-								screen[pDst + 0] = (ushort)(screen[pDst + 0] | d6);
-							if ((d5 & 0x02) != 0)
-								screen[pDst + 1] = (ushort)(screen[pDst + 1] | d6);
-							if ((d5 & 0x04) != 0)
-								screen[pDst + 2] = (ushort)(screen[pDst + 2] | d6);
-						} // Endif3
+							color = (d5 & 7) | 8;
+						}
+						screen[y * 320 + x] = (byte)color;
 
 						d1--;
 						if (d1 < 0) {
@@ -691,15 +680,13 @@ public class Game {
 								d1 = d5;
 							}
 						}
-						pDst += 80;
+						y += 1;
 					}
 				} // Endif2
 				Raytracer_heights[bufferUnk02Offset] = View_heights [viewHeightsOffsetBase + viewHeightsOffsets];
 			} // Endif1
 
-			ROL_w (1, ref d6);
-			if ((d6 & 0x0001) != 0)
-				screenOffset -= 4;
+			x -= 1;
 
 			d0 = 0;
 			dword_1CE82 += 0xB000;
