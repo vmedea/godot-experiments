@@ -15,7 +15,7 @@ extends Node
 
 
 ## Escape for regular expression. From https://github.com/godotengine/godot-proposals/issues/7995.
-static func _re_escape(input: String) -> String:
+func _re_escape(input: String) -> String:
 	input = input.replace("\\", "\\\\")
 	input = input.replace(".", "\\.")
 	input = input.replace("^", "\\^")

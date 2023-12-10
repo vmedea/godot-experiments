@@ -15,9 +15,10 @@ func _set_info(debug: String, state: int, distance: int, heading: float, heading
 
 		info_label.text = debug + "\n" + distanceStr + "\n" + headingStr + "\nSpeed: "
 		speed_gauge.value = speed
+		speed_gauge.show()
 	else:
 		info_label.text = ""
-		speed_gauge.value = 0
+		speed_gauge.hide()
 
 
 func _ready():

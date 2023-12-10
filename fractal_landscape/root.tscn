@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://d32ceq3ahvws1"]
+[gd_scene load_steps=11 format=3 uid="uid://d32ceq3ahvws1"]
 
 [ext_resource type="Script" path="res://root.gd" id="1_ekdhk"]
 [ext_resource type="Shader" path="res://screen.gdshader" id="2_axcid"]
@@ -11,8 +11,16 @@ shader_parameter/palette = ExtResource("3_1w2kd")
 
 [sub_resource type="ImageTexture" id="ImageTexture_8judv"]
 
+[sub_resource type="Gradient" id="Gradient_6rvl8"]
+colors = PackedColorArray(0.0646965, 0.0646965, 0.0646965, 1, 0.123473, 0.123473, 0.123473, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_p25ut"]
+gradient = SubResource("Gradient_6rvl8")
+width = 11
+height = 1
+
 [sub_resource type="Gradient" id="Gradient_2kjpv"]
-colors = PackedColorArray(0.38, 1, 0.390333, 1, 1, 0.421216, 0.352519, 1)
+colors = PackedColorArray(0.3286, 0.3286, 0.62, 1, 0.2944, 0.64, 0.64, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_3jgwt"]
 gradient = SubResource("Gradient_2kjpv")
@@ -55,6 +63,7 @@ offset_top = 97.0
 offset_right = 1107.0
 offset_bottom = 113.0
 max_value = 11.0
-value = 11.0
+value = 7.0
 nine_patch_stretch = true
+texture_under = SubResource("GradientTexture2D_p25ut")
 texture_progress = SubResource("GradientTexture2D_3jgwt")

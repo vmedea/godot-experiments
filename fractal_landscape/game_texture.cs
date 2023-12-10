@@ -20,13 +20,13 @@ public partial class game_texture : TextureRect
 		_game = new Game(false);
 		_frame = 0.0;
 		_game.fullRaytracer = false;
+		_game.view.speed = 6;
 		_speedFloat = (double)_game.view.speed;
 	}
 	
 	public override void _Ready()
 	{
-		img.Fill(Color.Color8(255, 0, 255, 255));
-		//GD.Print("Hello from C# ", img.GetWidth(), " ", img.GetHeight(), " ", Color.Color8(255, 0, 255, 255));
+		img.Fill(Color.Color8(0, 0, 0, 0));
 		ImageTexture t = this.Texture as ImageTexture;
 		t.SetImage(img);
 	}
@@ -54,7 +54,7 @@ public partial class game_texture : TextureRect
 				}
 			}
 		} else {
-			// Four interleaved bitplanes, 320x200
+			// Four interleaved bitplanes, 320x200 (extract a 256x128 area)
 			const int xofs = 32;
 			const int yofs = 18;
 			const int planes = 4;
