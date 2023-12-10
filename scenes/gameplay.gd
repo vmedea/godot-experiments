@@ -1,144 +1,74 @@
 extends Node2D
 
-const FILE_MAGIC_NUMBER := 0xCC170206
-const ROOM_MAX_X := 8
-const ROOM_MAX_Y := 8
-const ROOM_MAX_Z := 11
+# Player size: somewhat smaller size than a tile.
+const TOFS: float = 14.999/16
 
-## Compass (room exit) directions.
-enum Compass {
-	NORTH = 0, ## -Y (right key)
-	EAST = 1,  ## +X (down key)
-	SOUTH = 2, ## +Y (left key)
-	WEST = 3,  ## -X (up key)
-}
-
-## Offset, per compass direction.
-const DIR_OFFSET = [
-	Vector3i(0, -1, 0),
-	Vector3i(1, 0, 0),
-	Vector3i(0, 1, 0),
-	Vector3i(-1, 0, 0),
-]
-
-## Special blocks.
-enum Blocks {
-	# Gates.
-	EXIT_X0 = 20,
-	EXIT_X1 = 22,
-	EXIT_Y0 = 16,
-	EXIT_Y1 = 18,
-
-	# Light.
-	CANDLE = 36,
-	TORCH = 45,
-	LAMPION = 178,
-
-	# Air.
-	PUMP = 24,
-	
-	# Initial quest.
-	SPELLBOOK = 93,
-	
-	# Ingredients.
-	BUDDHA = 92,
-	CRUCIFIX = 46,
-	PUMPKIN = 181,
-	DRAGON = 191,
-	FLASK = 157,
-	BEANS = 200,
-}
 
 # north-west top coordinate of player, in tiles (16x16x16 pixels)
 var player_coord: Vector3
 var player_velocity: Vector3
 var player_on_floor: bool
 
-var room_id = 5
+var room_id = 0
 var rooms = []
+var room: GameRoom
+## Flags from Types.BlockAttributes for each block type.
+var block_attributes: Array[int]
 
+const Blocks = Types.Blocks
+const Compass = Types.Compass
 
-func load_rooms(filename):
-	var f = FileAccess.open(filename, FileAccess.READ)
-	var magic := f.get_32()
-	if magic != FILE_MAGIC_NUMBER:
-		printerr("load_rooms: Wrong magic number")
-		return null
-	var num_rooms := f.get_32()
-	print("Number of rooms: %s" % [num_rooms])
-	var rooms_data = []
-	for n in num_rooms:
-		var room = {}
-		# North, East, South, West
-		room.exits = [f.get_16(), f.get_16(), f.get_16(), f.get_16()]
-		room.dims = {'x': f.get_8(), 'y': f.get_8(), 'z': ROOM_MAX_Z} # Height is always MAX_Z
-		#print("Room %s: exits %s dims %s" % [n, room.exits, room.dims])
+func get_block_attributes(tileset: TileSet) -> Array[int]:
+	var source: TileSetAtlasSource = tileset.get_source(0)
+	var blocks = []
+	var size: Vector2i = source.get_atlas_grid_size()
+	for y in range(size.y):
+		for x in range(size.x):
+			var data: TileData = source.get_tile_data(Vector2i(x, y), 0)
+			var flags: int = 0
+			for bit in 8:
+				if data.get_custom_data_by_layer_id(bit):
+					flags |= 1 << bit
+			blocks.append(flags)
+	return blocks
 
-		room.wall_type = f.get_8()
-		room.light_default = f.get_8()
-		room.level = []
-		for z in ROOM_MAX_Z:
-			var slice = []
-			for y in ROOM_MAX_Y:
-				slice.append(f.get_buffer(ROOM_MAX_X))
-			room.level.append(slice)
-				
-		rooms_data.append(room)
-	return rooms_data
 
 func build_room(room):
 	var tilemap: TileMap = $Level
 	tilemap.clear()
 	
-	for z in range(ROOM_MAX_Z):
+	for z in range(GameRoom.ROOM_MAX_Z):
 		tilemap.set_layer_y_sort_origin(z, z*16 + z)
 
 	for z in range(room.dims.z):
 		for y in range(room.dims.y):
 			for x in range(room.dims.x):
-				var tile_id = get_block(room, Vector3(x, y, z))
+				var tile_id = room.get_block(Vector3(x, y, z))
 				if tile_id > 0:
 					tilemap.set_cell(10 - z, Vector2i(x + z, y + z), 0, Vector2i(tile_id & 0xf, tile_id >> 4), 0)
 
 
-## Get block by x,y,z integer coordinate.
-func get_block(room, grid_pos: Vector3i) -> int:
-	if grid_pos.x < 0 or grid_pos.y < 0 or grid_pos.z < 0 or grid_pos.x >= room.dims.x or grid_pos.y >= room.dims.y or grid_pos.z >= room.dims.z:
-		return -1
-	return room.level[grid_pos.z][grid_pos.y][grid_pos.x]
+func enter_room(new_room_id: int, exit_id: int):
+	if new_room_id >= 0 and new_room_id < rooms.size():
+		room_id = new_room_id
+		room = rooms[room_id]
+		if exit_id >= 0:
+			player_coord = room.find_entrance_from(exit_id)
+		else:
+			player_coord = Vector3(3, 3, 7)
+		player_velocity = Vector3(0.0, 0.0, 0.0)
+		build_room(room)
+		# Need to find out where to enter in new room.
+		update_room_number()
 
-
-func find_entrance_from(room, direction: Compass):
-	# Scan along wall:
-	# NORTH -Y   XZ y==ymax   Blocks.EXIT_Y0 Blocks.EXIT_Y1
-	# EAST  +X   YZ x==0      Blocks.EXIT_X0 Blocks.EXIT_X1
-	# SOUTH +Y   XZ y==0      Blocks.EXIT_Y0 Blocks.EXIT_Y1
-	# WEST  -X   YZ x==xmax   Blocks.EXIT_X0 Blocks.EXIT_X1
-	if direction == Compass.NORTH or direction == Compass.SOUTH:
-		# Scan north or south wall for Blocks.EXIT_Y0 Blocks.EXIT_Y1
-		var y = room.dims.y - 1 if direction == Compass.NORTH else 0
-		for x in room.dims.x - 1:
-			for z in room.dims.z:
-				if get_block(room, Vector3i(x, y, z)) == Blocks.EXIT_Y0 and get_block(room, Vector3i(x + 1, y, z)) == Blocks.EXIT_Y1:
-					return Vector3(x + 0.5, y, z) + Vector3(DIR_OFFSET[direction])
-	else:
-		# Scan west or east wall for Blocks.EXIT_X0 Blocks.EXIT_X1
-		var x = room.dims.x - 1 if direction == Compass.WEST else 0
-		for y in room.dims.y - 1:
-			for z in room.dims.z:
-				if get_block(room, Vector3i(x, y, z)) == Blocks.EXIT_X1 and get_block(room, Vector3i(x, y + 1, z)) == Blocks.EXIT_X0:
-					return Vector3(x, y + 0.5, z) + Vector3(DIR_OFFSET[direction])
 
 func update_room_number():
 	$CanvasLayer/RoomNumber.text = "Room %d" % [room_id]
-	
-	print('Entrance from north: ', find_entrance_from(rooms[room_id], Compass.NORTH))
-	print('Entrance from south: ', find_entrance_from(rooms[room_id], Compass.SOUTH))
-	print('Entrance from west: ', find_entrance_from(rooms[room_id], Compass.WEST))
-	print('Entrance from east: ', find_entrance_from(rooms[room_id], Compass.EAST))
+	print('Entrance from north: ', room.find_entrance_from(Types.Compass.NORTH))
+	print('Entrance from south: ', room.find_entrance_from(Types.Compass.SOUTH))
+	print('Entrance from west: ', room.find_entrance_from(Types.Compass.WEST))
+	print('Entrance from east: ', room.find_entrance_from(Types.Compass.EAST))
 
-# Player size: somewhat smaller size than a tile.
-var TOFS: float = 14.999/16
 
 func place_player():
 	# This is not perfect, but as close as we can get with y-sorting.
@@ -161,11 +91,9 @@ func place_player():
 	
 	
 func _ready():
-	rooms = load_rooms("res://rooms.bin")
-	build_room(rooms[room_id])
-	update_room_number()
-	player_coord = Vector3(3, 3, 9)
-	place_player()
+	block_attributes = get_block_attributes(load("res://tilesets/game.tres"))
+	rooms = GameRoom.load_rooms("res://rooms.bin")
+	enter_room(0, -1)
 
 
 ## Check new position for collisions.
@@ -181,10 +109,11 @@ func collision_check(room, pos: Vector3):
 	for z in range(z0, z1 + 1):
 		for y in range(y0, y1 + 1):
 			for x in range(x0, x1 + 1):
-				if get_block(room, Vector3i(x, y, z)) != 0:
+				if room.get_block(Vector3i(x, y, z)) != 0:
 					return false # XXX spiky/pump
-	#print(x0, " ", x1, " ", y0, " ", y1, " ", z0, " ", z1)
+
 	return true
+
 
 ## Check player position, velocity to see if player is entering a portal (one of
 ## EXIT_*), and from which side. The direction is important, and the player
@@ -207,13 +136,15 @@ func exit_check(room, pos: Vector3, velocity: Vector3):
 		y = y1
 		
 	if x != null:
-		if get_block(room, Vector3i(x, y0, z)) in [Blocks.EXIT_X0, Blocks.EXIT_X1] and get_block(room, Vector3i(x, y1, z)) in [Blocks.EXIT_X0, Blocks.EXIT_X1]:
+		var block_types = [Blocks.EXIT_X0, Blocks.EXIT_X1]
+		if room.get_block(Vector3i(x, y0, z)) in block_types and room.get_block(Vector3i(x, y1, z)) in block_types:
 			if velocity.x < 0:
 				return Compass.WEST
 			else:
 				return Compass.EAST
 	if y != null:
-		if get_block(room, Vector3i(x0, y, z)) in [Blocks.EXIT_Y0, Blocks.EXIT_Y1] and get_block(room, Vector3i(x1, y, z)) in [Blocks.EXIT_Y0, Blocks.EXIT_Y1]:
+		var block_types = [Blocks.EXIT_Y0, Blocks.EXIT_Y1]
+		if room.get_block(Vector3i(x0, y, z)) in block_types and room.get_block(Vector3i(x1, y, z)) in block_types:
 			if velocity.y < 0:
 				return Compass.NORTH
 			else:
@@ -261,6 +192,7 @@ func _physics_process(delta):
 		player_coord = new_coord
 		player_on_floor = false
 	else:
+		# XXX fall to death
 		player_on_floor = true
 		player_velocity.z = 0.0
 
@@ -269,13 +201,7 @@ func _physics_process(delta):
 		print('Detected exit in direction %d' % [exit_id])
 		var new_room_id = room.exits[exit_id]
 		if new_room_id >= 0 and new_room_id < rooms.size():
-			room_id = new_room_id
-			player_coord = find_entrance_from(rooms[room_id], exit_id)
-			print(player_coord)
-			player_velocity = Vector3(0.0, 0.0, 0.0)
-			build_room(rooms[room_id])
-			# Need to find out where to enter in new room.
-			update_room_number()
+			enter_room(new_room_id, exit_id)
 
 	place_player()
 
@@ -295,10 +221,7 @@ func _input(event):
 	if event.is_action_pressed("ui_page_down"):
 		new_room_id = room_id + 1
 	if new_room_id != null:
-		if new_room_id >= 0 and new_room_id < rooms.size():
-			room_id = new_room_id
-			build_room(rooms[room_id])
-			update_room_number()
+		enter_room(new_room_id, -1)
 		
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().quit()
