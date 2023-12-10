@@ -337,6 +337,18 @@ public class Game {
 		Flying_MoveLeftOrRight();
 	}
 
+	private void View_SetPixel(int x, int y, int color) {
+		if (x >= 0 && y >= 0 && x <= 255 && y <= 127) {
+			ushort bitToSet = (ushort)(1 << (0xf - (x & 0xf)));
+			viewGfx[(y * 16 + (x >> 4)) * 2 + 0] &= (ushort)~bitToSet;
+			viewGfx[(y * 16 + (x >> 4)) * 2 + 1] &= (ushort)~bitToSet;
+			if ((color & 1) != 0)
+				viewGfx[(y * 16 + (x >> 4)) * 2 + 0] |= bitToSet;
+			if ((color & 2) != 0)
+				viewGfx[(y * 16 + (x >> 4)) * 2 + 1] |= bitToSet;
+		}
+	}
+
 	public void View_DrawNextSegment() {
 		int curveOffset = (int) (View_segmentsCurveOffsetFixed[view.lastSegmentIndex_x4] >> 16);
 		int curveOffsetFixedPart = (int) (View_segmentsCurveOffsetFixed[view.lastSegmentIndex_x4] & 0xFFFF);
@@ -345,21 +357,17 @@ public class Game {
 	}
 
 	public void View_DrawSegment(byte [] curve, int curveOffset, int curveOffsetFixedPart) {
-		int viewHeightsOffset = 0;
-		int pDstOffset = 7 * 2; // x offset 112
-		int bitToSet = 1; // 112+15 = 127, begin at middle of screen
+		int x = 128;
 		int depthFactorFixed = 0xFF00 / view.distanceToLastSegment;
 
 		if (depthFactorFixed <= 0x00FF) {
-			View_FarLines(viewHeightsOffset, depthFactorFixed, pDstOffset, curve, curveOffset, bitToSet);
+			View_FarLines(x, depthFactorFixed, curve, curveOffset);
 			return;
 		}
 
 		// Horizontal displacement from horizontal position (move left/right)
 		int xPixelDelta = ((curveOffsetFixedPart * depthFactorFixed) >> 16) >> 8;
-		viewHeightsOffset -= xPixelDelta;
-		pDstOffset -= (xPixelDelta >> 3) & 0xFFFE;
-		bitToSet <<= xPixelDelta & 0xF;
+		x -= xPixelDelta;
 
 		// Set at middle of the view
 		int nbPixelsWidthToDraw = xPixelDelta + 127;
@@ -369,14 +377,14 @@ public class Game {
 		yDeltaFixed *= depthFactorFixed;
 		int yFixed = 0x400000 + yDeltaFixed;
 		// Right
-		View_DrawSegment_Helper(viewHeightsOffset, yFixed, depthFactorFixed, pDstOffset, curve, curveOffset, bitToSet, nbPixelsWidthToDraw, 28, true);
+		View_DrawSegment_Helper(x, yFixed, depthFactorFixed, curve, curveOffset, nbPixelsWidthToDraw, 28, true);
 		// Left
 		nbPixelsWidthToDraw = 254 - nbPixelsWidthToDraw;
-		View_DrawSegment_Helper(viewHeightsOffset, yFixed, depthFactorFixed, pDstOffset, curve, curveOffset, bitToSet, nbPixelsWidthToDraw, 28, false);
+		View_DrawSegment_Helper(x, yFixed, depthFactorFixed, curve, curveOffset, nbPixelsWidthToDraw, 28, false);
 	}
 
 	// Draw zoomed curve, larger than view width
-	public void View_DrawSegment_Helper(int viewHeightsOffset, int yPixelFixed, int widthFixed, int pDstOffset, byte [] curve, int curveOffset, int bitToSet, int nbPixelsWidthToDraw, int waterLevel, bool doRight) {
+	public void View_DrawSegment_Helper(int x, int yPixelFixed, int widthFixed, byte [] curve, int curveOffset, int nbPixelsWidthToDraw, int waterLevel, bool doRight) {
 		int remainingWidthFixed = -0x0100;
 
 		for (; ; ) { // Loop curve
@@ -393,22 +401,14 @@ public class Game {
 				int yPixelFixedTemp = yPixelFixed;
 				for (; ; ) { // Loop write pixels
 					int yPixel = yPixelFixedTemp >> 16;
-					if (yPixel <= View_heights[viewHeightsOffsetBase + viewHeightsOffset]) {
-						View_heights[viewHeightsOffsetBase + viewHeightsOffset] = yPixel;
-						if (yPixel >= 0) {
-							viewGfx[pDstOffset + yPixel * 32] |= (ushort)bitToSet;
-						}
+					if (yPixel <= View_heights[x]) {
+						View_heights[x] = yPixel;
+						View_SetPixel(x, yPixel, 1);
 					}
 					if (doRight) {
-						viewHeightsOffset++;
-						ROR_w (1, ref bitToSet);
-						if ((bitToSet & 0x8000) != 0)
-							pDstOffset += 2;
+						x++;
 					} else {
-						viewHeightsOffset--;
-						ROL_w (1, ref bitToSet);
-						if ((bitToSet & 0x0001) != 0)
-							pDstOffset -= 2;
+						x--;
 					}
 					yPixelFixedTemp += d1;
 					remainingWidthFixed -= 0x0100;
@@ -422,26 +422,18 @@ public class Game {
 				yPixelFixed += (d1 >> 8) * widthFixed;
 			} else { // Horizontal line
 				int yPixel = yPixelFixed >> 16;
-				int pixelOffset = yPixel * 32;
+				int color = 1;
 				if (curve [(curveOffset + 0x4000) & 0x3FFF] <= waterLevel) // 28
-					pixelOffset += 1; // color light blue for "water"
+					color = 2; // color light blue for "water"
 				for (; ; ) {
-					if (yPixel < View_heights[viewHeightsOffsetBase + viewHeightsOffset]) {
-						View_heights[viewHeightsOffsetBase + viewHeightsOffset] = yPixel;
-						if (yPixel >= 0) {
-							viewGfx[pDstOffset + pixelOffset] |= (ushort) bitToSet;
-						}
+					if (yPixel < View_heights[x]) {
+						View_heights[x] = yPixel;
+						View_SetPixel(x, yPixel, color);
 					}
 					if (doRight) {
-						viewHeightsOffset++;
-						ROR_w (1, ref bitToSet);
-						if ((bitToSet & 0x8000) != 0)
-							pDstOffset += 2;
+						x++;
 					} else {
-						viewHeightsOffset--;
-						ROL_w (1, ref bitToSet);
-						if ((bitToSet & 0x0001) != 0)
-							pDstOffset -= 2;
+						x--;
 					}
 					remainingWidthFixed -= 0x0100;
 					if ((nbPixelsWidthToDraw == 0) || (remainingWidthFixed < 0))
@@ -456,12 +448,12 @@ public class Game {
 	}
 
 	// Draw shrinked curve, smaller than view width
-	public void View_FarLines(int viewHeightsOffset, int widthFixed, int pDstOffset, byte [] curve, int curveOffset, int bitToSet) {
-		View_FarLines_Helper(viewHeightsOffset, widthFixed, pDstOffset, curve, curveOffset, bitToSet, 118, true);
-		View_FarLines_Helper(viewHeightsOffset, widthFixed, pDstOffset, curve, curveOffset, bitToSet, 119, false);
+	public void View_FarLines(int x, int widthFixed, byte [] curve, int curveOffset) {
+		View_FarLines_Helper(x, widthFixed, curve, curveOffset, 118, true);
+		View_FarLines_Helper(x, widthFixed, curve, curveOffset, 119, false);
 	}
 
-	public void View_FarLines_Helper(int viewHeightsOffset, int widthFixed, int pDstOffset, byte [] curve, int curveOffset, int bitToSet, int nbPixelsWidthToDraw, bool doRight) {
+	public void View_FarLines_Helper(int x, int widthFixed, byte [] curve, int curveOffset, int nbPixelsWidthToDraw, bool doRight) {
 		int d0 = view.heightFixed >> (8 + 3);
 		int remainingWidthFixed = widthFixed;
 		bool first = true;
@@ -469,28 +461,20 @@ public class Game {
 			if (!doRight || (doRight & !first)) {
 				int yPixel = curve[(curveOffset + 0x4000) & 0x3FFF];
 				yPixel = ((d0 - (yPixel << 5)) * widthFixed + 0x400000) >> 16;
-				if (yPixel < View_heights[viewHeightsOffsetBase + viewHeightsOffset]) {
-					View_heights[viewHeightsOffsetBase + viewHeightsOffset] = yPixel;
-					if (yPixel >= 0) {
-						int pixelOffset = yPixel * 32;
-						if (curve[(curveOffset + 0x4000) & 0x3FFF] <= 28)
-							pixelOffset += 1; // color light blue for "water"
-						viewGfx[pDstOffset + pixelOffset] |= (ushort)bitToSet;
-					}
+				if (yPixel < View_heights[x]) {
+					int color = 1;
+					if (curve[(curveOffset + 0x4000) & 0x3FFF] <= 28)
+						color = 2; // color light blue for "water"
+					View_heights[x] = yPixel;
+					View_SetPixel(x, yPixel, color);
 				}
 			}
 			first = false;
 
 			if (doRight) {
-				viewHeightsOffset++;
-				ROR_w (1, ref bitToSet);
-				if ((bitToSet & 0x8000) != 0)
-					pDstOffset += 2;
+				x++;
 			} else {
-				viewHeightsOffset--;
-				ROL_w (1, ref bitToSet);
-				if ((bitToSet & 0x0001) != 0)
-					pDstOffset -= 2;
+				x--;
 			}
 			remainingWidthFixed -= 0x0100;
 
