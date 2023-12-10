@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharptest", "csharptest.csproj", "{727572FA-4417-43C8-9375-3E776CCD2CCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fractal-landscape", "fractal-landscape.csproj", "{727572FA-4417-43C8-9375-3E776CCD2CCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

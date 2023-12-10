@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="fractal_landscape"
+config/name="fractal-landscape"
 run/main_scene="res://root.tscn"
 config/features=PackedStringArray("4.2", "C#", "Mobile")
 config/icon="res://icon.svg"
@@ -20,13 +20,17 @@ config/icon="res://icon.svg"
 PauseController="*res://autoloads/pause_controller.gd"
 ScreenshotHandler="*res://autoloads/screenshot_handler.gd"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=1
+
 [display]
 
 window/stretch/mode="canvas_items"
 
 [dotnet]
 
-project/assembly_name="csharptest"
+project/assembly_name="fractal-landscape"
 
 [input]
 
