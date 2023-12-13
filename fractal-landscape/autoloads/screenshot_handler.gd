@@ -36,14 +36,14 @@ func _re_escape(input: String) -> String:
 # Save an arbitrary Image.
 func save_image(image: Image) -> void:
 	# List the directory and find highest id used.
-	var spec = RegEx.create_from_string("^" + _re_escape(prefix) + "([0-9]{" + str(digits) + "})" + _re_escape(suffix) + "$")
-	var highest = 0
+	var spec := RegEx.create_from_string("^" + _re_escape(prefix) + "([0-9]{" + str(digits) + "})" + _re_escape(suffix) + "$")
+	var highest := 0
 	for filename in DirAccess.open(root_path).get_files():
-		var m = spec.search(filename)
+		var m := spec.search(filename)
 		if m:
 			highest = max(highest, int(m.get_string(1)))
 		
-	var path = root_path + prefix + str(highest + 1).pad_zeros(digits) + suffix
+	var path := root_path + prefix + str(highest + 1).pad_zeros(digits) + suffix
 		
 	image.save_png(path)
 	print("Saved screenshot to ", path)
@@ -55,7 +55,7 @@ func save_viewport(viewport: Viewport) -> void:
 
 
 # Always process, even when paused.
-func _ready():
+func _ready() -> void:
 	process_mode = PROCESS_MODE_ALWAYS
 
 
