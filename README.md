@@ -1,5 +1,8 @@
 A random collection of experiments with Godot 4.
 
+`fractal-landscape` needs a godot environment with C# support, the other
+projects are built using GDscript only.
+
 ## airball
 
 Port in progress of the isometric Atari ST game airball using Godot 4's tilemap

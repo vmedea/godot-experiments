@@ -4,7 +4,7 @@ extends Node2D
 @onready var speed_gauge: TextureProgressBar = $TextureRect/Speed;
 
 
-func _set_info(debug: String, state: int, distance: int, heading: float, headingDelta: float, speed: int):
+func _set_info(debug: String, state: int, distance: int, heading: float, headingDelta: float, speed: int) -> void:
 	if state >= 1:
 		var headingStr := "Heading: %+.3f %+.3f" % [heading, headingDelta]
 		var distanceStr := ""
@@ -21,5 +21,5 @@ func _set_info(debug: String, state: int, distance: int, heading: float, heading
 		speed_gauge.hide()
 
 
-func _ready():
+func _ready() -> void:
 	$TextureRect.Info.connect(_set_info)
