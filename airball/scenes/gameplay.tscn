@@ -95,17 +95,83 @@ region = Rect2(32, 0, 32, 40)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_m2abi"]
 animations = [{
-"frames": [SubResource("AtlasTexture_wwgai"), SubResource("AtlasTexture_yq1ad"), SubResource("AtlasTexture_lgi7s"), SubResource("AtlasTexture_m75nv"), SubResource("AtlasTexture_gwrho"), SubResource("AtlasTexture_xhbl0"), SubResource("AtlasTexture_wlhrh"), SubResource("AtlasTexture_4728a"), SubResource("AtlasTexture_yem6x"), SubResource("AtlasTexture_sxgbi"), SubResource("AtlasTexture_sw22r"), SubResource("AtlasTexture_e6s4k"), SubResource("AtlasTexture_5v8c2"), SubResource("AtlasTexture_yygxb"), SubResource("AtlasTexture_2qyya"), SubResource("AtlasTexture_l6pki"), SubResource("AtlasTexture_v8884")],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wwgai")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yq1ad")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lgi7s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m75nv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gwrho")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xhbl0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wlhrh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4728a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yem6x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sxgbi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sw22r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e6s4k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5v8c2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yygxb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2qyya")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l6pki")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v8884")
+}],
 "loop": true,
 "name": &"death",
 "speed": 5.0
 }, {
-"frames": [SubResource("AtlasTexture_h3mqy")],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h3mqy")
+}],
 "loop": true,
 "name": &"idle",
 "speed": 5.0
 }, {
-"frames": [SubResource("AtlasTexture_gnn84"), SubResource("AtlasTexture_wsrlc"), SubResource("AtlasTexture_4f5a1"), SubResource("AtlasTexture_kjaex")],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnn84")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wsrlc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4f5a1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kjaex")
+}],
 "loop": true,
 "name": &"walk",
 "speed": 5.0
@@ -127,88 +193,33 @@ position = Vector2(144, -56)
 tile_set = ExtResource("1_oyj32")
 format = 2
 layer_0/y_sort_enabled = true
-layer_1/name = ""
-layer_1/enabled = true
-layer_1/modulate = Color(1, 1, 1, 1)
 layer_1/y_sort_enabled = true
-layer_1/y_sort_origin = 0
-layer_1/z_index = 0
 layer_1/tile_data = PackedInt32Array()
-layer_2/name = ""
-layer_2/enabled = true
-layer_2/modulate = Color(1, 1, 1, 1)
 layer_2/y_sort_enabled = true
-layer_2/y_sort_origin = 0
-layer_2/z_index = 0
 layer_2/tile_data = PackedInt32Array()
-layer_3/name = ""
-layer_3/enabled = true
-layer_3/modulate = Color(1, 1, 1, 1)
 layer_3/y_sort_enabled = true
-layer_3/y_sort_origin = 0
-layer_3/z_index = 0
 layer_3/tile_data = PackedInt32Array()
-layer_4/name = ""
-layer_4/enabled = true
-layer_4/modulate = Color(1, 1, 1, 1)
 layer_4/y_sort_enabled = true
-layer_4/y_sort_origin = 0
-layer_4/z_index = 0
 layer_4/tile_data = PackedInt32Array()
-layer_5/name = ""
-layer_5/enabled = true
-layer_5/modulate = Color(1, 1, 1, 1)
 layer_5/y_sort_enabled = true
-layer_5/y_sort_origin = 0
-layer_5/z_index = 0
 layer_5/tile_data = PackedInt32Array()
-layer_6/name = ""
-layer_6/enabled = true
-layer_6/modulate = Color(1, 1, 1, 1)
 layer_6/y_sort_enabled = true
-layer_6/y_sort_origin = 0
-layer_6/z_index = 0
 layer_6/tile_data = PackedInt32Array()
-layer_7/name = ""
-layer_7/enabled = true
-layer_7/modulate = Color(1, 1, 1, 1)
 layer_7/y_sort_enabled = true
-layer_7/y_sort_origin = 0
-layer_7/z_index = 0
 layer_7/tile_data = PackedInt32Array()
-layer_8/name = ""
-layer_8/enabled = true
-layer_8/modulate = Color(1, 1, 1, 1)
 layer_8/y_sort_enabled = true
-layer_8/y_sort_origin = 0
-layer_8/z_index = 0
 layer_8/tile_data = PackedInt32Array()
-layer_9/name = ""
-layer_9/enabled = true
-layer_9/modulate = Color(1, 1, 1, 1)
 layer_9/y_sort_enabled = true
-layer_9/y_sort_origin = 0
-layer_9/z_index = 0
 layer_9/tile_data = PackedInt32Array()
-layer_10/name = ""
-layer_10/enabled = true
-layer_10/modulate = Color(1, 1, 1, 1)
 layer_10/y_sort_enabled = true
-layer_10/y_sort_origin = 0
-layer_10/z_index = 0
 layer_10/tile_data = PackedInt32Array()
-layer_11/name = ""
-layer_11/enabled = true
-layer_11/modulate = Color(1, 1, 1, 1)
 layer_11/y_sort_enabled = true
-layer_11/y_sort_origin = 0
-layer_11/z_index = 0
 layer_11/tile_data = PackedInt32Array()
 
 [node name="Player" type="Node2D" parent="Level"]
 
 [node name="Player" type="AnimatedSprite2D" parent="Level/Player"]
-frames = SubResource("SpriteFrames_m2abi")
+sprite_frames = SubResource("SpriteFrames_m2abi")
 animation = &"idle"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

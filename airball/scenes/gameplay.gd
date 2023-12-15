@@ -20,7 +20,7 @@ const Compass = Types.Compass
 
 func get_block_attributes(tileset: TileSet) -> Array[int]:
 	var source: TileSetAtlasSource = tileset.get_source(0)
-	var blocks = []
+	var blocks: Array[int] = []
 	var size: Vector2i = source.get_atlas_grid_size()
 	for y in range(size.y):
 		for x in range(size.x):
