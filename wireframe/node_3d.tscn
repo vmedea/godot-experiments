@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://h5geq516bv1i"]
+
+[ext_resource type="Script" path="res://mesh_instance_3d.gd" id="1_5o51b"]
+[ext_resource type="Script" path="res://root.gd" id="1_oqgec"]
+
+[sub_resource type="Environment" id="Environment_5q1dk"]
+background_mode = 1
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_oqgec")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+script = ExtResource("1_5o51b")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.85172)
+environment = SubResource("Environment_5q1dk")
