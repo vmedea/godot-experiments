@@ -10,3 +10,4 @@ func _input(event: InputEvent):
 
 func _process(delta: float):
 	tri.rotate_y(delta)
+	

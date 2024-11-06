@@ -3,16 +3,30 @@ extends MeshInstance3D
 
 func _ready() -> void:
 	var vertices := PackedVector3Array()
-	vertices.push_back(Vector3(0, 1, 0))
-	vertices.push_back(Vector3(1, 0, 0))
-	vertices.push_back(Vector3(0, 0, 1))
+	vertices.push_back(Vector3(-1, -1, 0))
+	vertices.push_back(Vector3(-1, 1, 0))
+	vertices.push_back(Vector3(1, -1, 0))
+	
+	vertices.push_back(Vector3(1, -1, 0))
+	vertices.push_back(Vector3(-1, 1, 0))
+	vertices.push_back(Vector3(1, 1, 0))
+	
 	
 	var color0 := PackedByteArray()
 	color0.append_array(PackedByteArray([255, 0, 0, 255]))
 	color0.append_array(PackedByteArray([0, 255, 0, 255]))
+	color0.append_array(PackedByteArray([0, 0, 0, 255]))
+	
+	color0.append_array(PackedByteArray([255, 0, 0, 255]))
+	color0.append_array(PackedByteArray([0, 0, 0, 255]))
 	color0.append_array(PackedByteArray([0, 0, 255, 255]))
+	
 	var color1 := PackedByteArray()
 	color1.append_array(PackedByteArray([255, 255, 0, 255]))
+	color1.append_array(PackedByteArray([0, 0, 0, 255]))
+	color1.append_array(PackedByteArray([255, 0, 255, 255]))
+	
+	color1.append_array(PackedByteArray([0, 0, 0, 255]))
 	color1.append_array(PackedByteArray([0, 255, 255, 255]))
 	color1.append_array(PackedByteArray([255, 0, 255, 255]))
 	
