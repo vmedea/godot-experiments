@@ -3,22 +3,69 @@ extends MeshInstance3D
 
 func _ready() -> void:
 	var vertices := PackedVector3Array()
-	vertices.push_back(Vector3(-1, -1, 0))
-	vertices.push_back(Vector3(-1, 1, 0))
-	vertices.push_back(Vector3(1, -1, 0))
+	# +z
+	vertices.push_back(Vector3(-1, -1, 1))
+	vertices.push_back(Vector3(-1, 1, 1))
+	vertices.push_back(Vector3(1, -1, 1))
 	
-	vertices.push_back(Vector3(1, -1, 0))
-	vertices.push_back(Vector3(-1, 1, 0))
-	vertices.push_back(Vector3(1, 1, 0))
+	vertices.push_back(Vector3(1, -1, 1))
+	vertices.push_back(Vector3(-1, 1, 1))
+	vertices.push_back(Vector3(1, 1, 1))
 	
+	# -z
+	vertices.push_back(Vector3(-1, 1, -1))
+	vertices.push_back(Vector3(-1, -1, -1))
+	vertices.push_back(Vector3(1, 1, -1))
+	
+	vertices.push_back(Vector3(1, 1, -1))
+	vertices.push_back(Vector3(-1, -1, -1))
+	vertices.push_back(Vector3(1, -1, -1))
+
+	# +y
+	vertices.push_back(Vector3(1, 1, -1))
+	vertices.push_back(Vector3(1, 1, 1))
+	vertices.push_back(Vector3(-1, 1, -1))
+	
+	vertices.push_back(Vector3(-1, 1, -1))
+	vertices.push_back(Vector3(1, 1, 1))
+	vertices.push_back(Vector3(-1, 1, 1))
+	
+	# -y
+	vertices.push_back(Vector3(-1, -1, -1))
+	vertices.push_back(Vector3(-1, -1, 1))
+	vertices.push_back(Vector3(1, -1, -1))
+	
+	vertices.push_back(Vector3(1, -1, -1))
+	vertices.push_back(Vector3(-1, -1, 1))
+	vertices.push_back(Vector3(1, -1, 1))
+
+	# +x
+	vertices.push_back(Vector3(1, -1, -1))
+	vertices.push_back(Vector3(1, -1, 1))
+	vertices.push_back(Vector3(1, 1, -1))
+	
+	vertices.push_back(Vector3(1, 1, -1))
+	vertices.push_back(Vector3(1, -1, 1))
+	vertices.push_back(Vector3(1, 1, 1))
+
+	# -x
+	vertices.push_back(Vector3(-1, 1, -1))
+	vertices.push_back(Vector3(-1, 1, 1))
+	vertices.push_back(Vector3(-1, -1, -1))
+	
+	vertices.push_back(Vector3(-1, -1, -1))
+	vertices.push_back(Vector3(-1, 1, 1))
+	vertices.push_back(Vector3(-1, -1, 1))
+
 	var flags := PackedByteArray()
-	flags.append_array(PackedByteArray([255, 255, 0, 0]))
-	flags.append_array(PackedByteArray([255, 0,   0, 0]))
-	flags.append_array(PackedByteArray([0,   255, 0, 0]))
-	
-	flags.append_array(PackedByteArray([255, 0,   0, 0]))
-	flags.append_array(PackedByteArray([0,   255, 0, 0]))
-	flags.append_array(PackedByteArray([255, 255, 0, 0]))
+	for i in 6:
+		flags.append_array(PackedByteArray([255, 255, 0, 0]))
+		flags.append_array(PackedByteArray([255, 0,   0, 0]))
+		flags.append_array(PackedByteArray([0,   255, 0, 0]))
+		
+		flags.append_array(PackedByteArray([255, 0,   0, 0]))
+		flags.append_array(PackedByteArray([0,   255, 0, 0]))
+		flags.append_array(PackedByteArray([255, 255, 0, 0]))
 	
 	var arr_mesh := ArrayMesh.new()
 	var arrays = []
