@@ -1,27 +1,13 @@
 shader_type spatial;
 render_mode unshaded;
 
+uniform vec3 line_color = vec3(0.0, 1.0, 0.0);
 uniform float line_width = 2.0;
 
 const vec3 vectors[3] = {
 	vec3(1.0, 0.0, 0.0),
 	vec3(0.0, 1.0, 0.0),
 	vec3(0.0, 0.0, 1.0)
-};
-const vec3 color0s[3] = {
-	vec3(1.0, 0.0, 0.0),
-	vec3(0.0, 0.0, 0.0), // irrelevant
-	vec3(1.0, 1.0, 1.0)
-};
-const vec3 color1s[3] = {
-	vec3(0.0, 0.0, 0.0), // irrelevant
-	vec3(1.0, 1.0, 1.0),
-	vec3(0.0, 1.0, 0.0)
-};
-const vec3 color2s[3] = {
-	vec3(1.0, 1.0, 1.0),
-	vec3(0.0, 0.0, 1.0),
-	vec3(0.0, 0.0, 0.0)  // irrelevant
 };
 
 varying vec3 bary_coord;
@@ -33,16 +19,16 @@ void vertex() {
 	int vtx = VERTEX_ID % 3;
 	bary_coord = vectors[vtx];
 	if (vtx == 0) {
-		color0 = CUSTOM0.xyz;
+		color0 = line_color * CUSTOM0.x;
 		color1 = vec3(0.0, 0.0, 0.0); // irrelevant
-		color2 = CUSTOM1.xyz;
+		color2 = line_color * CUSTOM0.y;
 	} else if (vtx == 1) {
 		color0 = vec3(0.0, 0.0, 0.0); // irrelevant
-		color1 = CUSTOM1.xyz;
-		color2 = CUSTOM0.xyz;
+		color1 = line_color * CUSTOM0.y;
+		color2 = line_color * CUSTOM0.x;
 	} else if (vtx == 2) {
-		color0 = CUSTOM1.xyz;
-		color1 = CUSTOM0.xyz;
+		color0 = line_color * CUSTOM0.y;
+		color1 = line_color * CUSTOM0.x;
 		color2 = vec3(0.0, 0.0, 0.0); // irrelevant
 	}
 }
