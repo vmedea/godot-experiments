@@ -42,7 +42,7 @@ void fragment() {
 	} else { // if (bary_coord.y > bary_coord.z && bary_coord.z < bary_coord.x) {
 		col = color2;
 	}
-	
+
 	vec3 bary_coord_dx = dFdx(bary_coord);
 	vec3 bary_coord_dy = dFdy(bary_coord);
 	vec3 bary_coord_d = sqrt(bary_coord_dx * bary_coord_dx + bary_coord_dy * bary_coord_dy);
@@ -51,9 +51,9 @@ void fragment() {
 		bary_coord_d * line_width,
 		bary_coord
 	);
-	
+
 	float closest_edge = min(min(remap.x, remap.y), remap.z);
-	
+
 	ALBEDO = mix(col, vec3(0.0, 0.0, 0.0), closest_edge);
 	ALPHA = 1.0;
 }
