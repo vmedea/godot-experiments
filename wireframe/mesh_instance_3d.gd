@@ -27,7 +27,7 @@ func new_array_from_typeid(typeid: Variant.Type) -> Variant:
 	return null
 	
 	
-func custom_granularity(custom_format: Mesh.ArrayCustomFormat) -> int:
+func array_custom_granularity(custom_format: Mesh.ArrayCustomFormat) -> int:
 	match custom_format:
 		Mesh.ARRAY_CUSTOM_RGBA8_UNORM, Mesh.ARRAY_CUSTOM_RGBA8_SNORM, Mesh.ARRAY_CUSTOM_RG_HALF:
 			return 4
@@ -43,6 +43,7 @@ func custom_granularity(custom_format: Mesh.ArrayCustomFormat) -> int:
 			return 4
 	return 0
 	
+
 func array_granularity(arr_id: Mesh.ArrayType, format: Mesh.ArrayFormat) -> int:
 	match arr_id:
 		Mesh.ARRAY_VERTEX, Mesh.ARRAY_NORMAL, Mesh.ARRAY_COLOR, Mesh.ARRAY_TEX_UV, Mesh.ARRAY_TEX_UV2:
@@ -50,13 +51,13 @@ func array_granularity(arr_id: Mesh.ArrayType, format: Mesh.ArrayFormat) -> int:
 		Mesh.ARRAY_TANGENT:
 			return 4
 		Mesh.ARRAY_CUSTOM0:
-			return custom_granularity((format >> Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) & Mesh.ARRAY_FORMAT_CUSTOM_MASK)
+			return array_custom_granularity((format >> Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) & Mesh.ARRAY_FORMAT_CUSTOM_MASK)
 		Mesh.ARRAY_CUSTOM1:
-			return custom_granularity((format >> Mesh.ARRAY_FORMAT_CUSTOM1_SHIFT) & Mesh.ARRAY_FORMAT_CUSTOM_MASK)
+			return array_custom_granularity((format >> Mesh.ARRAY_FORMAT_CUSTOM1_SHIFT) & Mesh.ARRAY_FORMAT_CUSTOM_MASK)
 		Mesh.ARRAY_CUSTOM2:
-			return custom_granularity((format >> Mesh.ARRAY_FORMAT_CUSTOM2_SHIFT) & Mesh.ARRAY_FORMAT_CUSTOM_MASK)
+			return array_custom_granularity((format >> Mesh.ARRAY_FORMAT_CUSTOM2_SHIFT) & Mesh.ARRAY_FORMAT_CUSTOM_MASK)
 		Mesh.ARRAY_CUSTOM3:
-			return custom_granularity((format >> Mesh.ARRAY_FORMAT_CUSTOM3_SHIFT) & Mesh.ARRAY_FORMAT_CUSTOM_MASK)
+			return array_custom_granularity((format >> Mesh.ARRAY_FORMAT_CUSTOM3_SHIFT) & Mesh.ARRAY_FORMAT_CUSTOM_MASK)
 	# Unhandled
 	# ARRAY_BONES
 	# ARRAY_WEIGHTS
@@ -97,85 +98,6 @@ func duplicate_vertices(input: ArrayMesh) -> ArrayMesh:
 		output.add_surface_from_arrays(input.surface_get_primitive_type(surf), new_arrays, [], {}, format)
 
 	return output
-
-func _ready_old() -> void:
-	var vertices := PackedVector3Array()
-	# +z
-	vertices.push_back(Vector3(-1, -1, 1))
-	vertices.push_back(Vector3(-1, 1, 1))
-	vertices.push_back(Vector3(1, -1, 1))
-	
-	vertices.push_back(Vector3(1, -1, 1))
-	vertices.push_back(Vector3(-1, 1, 1))
-	vertices.push_back(Vector3(1, 1, 1))
-	
-	# -z
-	vertices.push_back(Vector3(-1, 1, -1))
-	vertices.push_back(Vector3(-1, -1, -1))
-	vertices.push_back(Vector3(1, 1, -1))
-	
-	vertices.push_back(Vector3(1, 1, -1))
-	vertices.push_back(Vector3(-1, -1, -1))
-	vertices.push_back(Vector3(1, -1, -1))
-
-	# +y
-	vertices.push_back(Vector3(1, 1, -1))
-	vertices.push_back(Vector3(1, 1, 1))
-	vertices.push_back(Vector3(-1, 1, -1))
-	
-	vertices.push_back(Vector3(-1, 1, -1))
-	vertices.push_back(Vector3(1, 1, 1))
-	vertices.push_back(Vector3(-1, 1, 1))
-	
-	# -y
-	vertices.push_back(Vector3(-1, -1, -1))
-	vertices.push_back(Vector3(-1, -1, 1))
-	vertices.push_back(Vector3(1, -1, -1))
-	
-	vertices.push_back(Vector3(1, -1, -1))
-	vertices.push_back(Vector3(-1, -1, 1))
-	vertices.push_back(Vector3(1, -1, 1))
-
-	# +x
-	vertices.push_back(Vector3(1, -1, -1))
-	vertices.push_back(Vector3(1, -1, 1))
-	vertices.push_back(Vector3(1, 1, -1))
-	
-	vertices.push_back(Vector3(1, 1, -1))
-	vertices.push_back(Vector3(1, -1, 1))
-	vertices.push_back(Vector3(1, 1, 1))
-
-	# -x
-	vertices.push_back(Vector3(-1, 1, -1))
-	vertices.push_back(Vector3(-1, 1, 1))
-	vertices.push_back(Vector3(-1, -1, -1))
-	
-	vertices.push_back(Vector3(-1, -1, -1))
-	vertices.push_back(Vector3(-1, 1, 1))
-	vertices.push_back(Vector3(-1, -1, 1))
-
-	var flags := PackedByteArray()
-	for i in 6:
-		flags.append_array(PackedByteArray([255, 255, 0, 0]))
-		flags.append_array(PackedByteArray([255, 0,   0, 0]))
-		flags.append_array(PackedByteArray([0,   255, 0, 0]))
-		
-		flags.append_array(PackedByteArray([255, 0,   0, 0]))
-		flags.append_array(PackedByteArray([0,   255, 0, 0]))
-		flags.append_array(PackedByteArray([255, 255, 0, 0]))
-	
-	var arr_mesh := ArrayMesh.new()
-	var arrays = []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_CUSTOM0] = flags
-	arr_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	
-	var material := ShaderMaterial.new()
-	material.shader = load("res://shader.gdshader")
-	arr_mesh.surface_set_material(0, material)
-
-	mesh = arr_mesh
 
 
 func _ready() -> void:
