@@ -95,7 +95,7 @@ func duplicate_vertices(input: ArrayMesh) -> ArrayMesh:
 
 			new_arrays[arr_id] = new_arr
 
-		output.add_surface_from_arrays(input.surface_get_primitive_type(surf), new_arrays, [], {}, format)
+		output.add_surface_from_arrays(input.surface_get_primitive_type(surf), new_arrays, [], {}, format & ~Mesh.ARRAY_FORMAT_INDEX)
 
 	return output
 
