@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded;
+render_mode depth_draw_always, unshaded;
 
 uniform vec3 line_color = vec3(0.0, 1.0, 0.0);
 uniform float line_width = 2.0;

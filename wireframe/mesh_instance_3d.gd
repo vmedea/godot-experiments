@@ -96,9 +96,6 @@ func duplicate_vertices(input: ArrayMesh) -> ArrayMesh:
 
 		output.add_surface_from_arrays(input.surface_get_primitive_type(surf), new_arrays, [], {}, format)
 
-	print('surface count (in) ', input.get_surface_count())
-	print('surface count (out) ', output.get_surface_count())
-
 	return output
 
 func _ready_old() -> void:
@@ -184,9 +181,7 @@ func _ready_old() -> void:
 func _ready() -> void:
 	var mesh_in := load("res://hetobject.res")
 	assert(mesh_in.surface_get_primitive_type(0) == Mesh.PRIMITIVE_TRIANGLES)
-	print(mesh_in.surface_get_primitive_type(0))
 	var arr_mesh := duplicate_vertices(mesh_in)
-	print(arr_mesh.surface_get_primitive_type(0))
 	assert(arr_mesh.surface_get_primitive_type(0) == Mesh.PRIMITIVE_TRIANGLES)
 	
 	var material := ShaderMaterial.new()
