@@ -1,7 +1,8 @@
 shader_type spatial;
 render_mode depth_draw_always, unshaded;
 
-uniform vec3 line_color = vec3(0.0, 1.0, 0.0);
+uniform vec3 line_color: source_color = vec3(0.0, 1.0, 0.0);
+uniform vec3 base_color: source_color = vec3(0.0, 0.0, 0.0);
 uniform float line_width = 2.0;
 
 const vec3 vectors[3] = {
@@ -19,17 +20,17 @@ void vertex() {
 	int vtx = VERTEX_ID % 3;
 	bary_coord = vectors[vtx];
 	if (vtx == 0) {
-		color0 = line_color * CUSTOM0.x;
-		color1 = vec3(0.0, 0.0, 0.0); // irrelevant
-		color2 = line_color * CUSTOM0.y;
+		color0 = mix(base_color, line_color, CUSTOM0.x);
+		color1 = base_color; // irrelevant
+		color2 = mix(base_color, line_color, CUSTOM0.y);
 	} else if (vtx == 1) {
-		color0 = vec3(0.0, 0.0, 0.0); // irrelevant
-		color1 = line_color * CUSTOM0.y;
-		color2 = line_color * CUSTOM0.x;
+		color0 = base_color; // irrelevant
+		color1 = mix(base_color, line_color, CUSTOM0.y);
+		color2 = mix(base_color, line_color, CUSTOM0.x);
 	} else if (vtx == 2) {
-		color0 = line_color * CUSTOM0.y;
-		color1 = line_color * CUSTOM0.x;
-		color2 = vec3(0.0, 0.0, 0.0); // irrelevant
+		color0 = mix(base_color, line_color, CUSTOM0.y);
+		color1 = mix(base_color, line_color, CUSTOM0.x);
+		color2 = base_color; // irrelevant
 	}
 }
 
@@ -54,6 +55,6 @@ void fragment() {
 
 	float closest_edge = min(min(remap.x, remap.y), remap.z);
 
-	ALBEDO = mix(col, vec3(0.0, 0.0, 0.0), closest_edge);
+	ALBEDO = mix(col, base_color, closest_edge);
 	ALPHA = 1.0;
 }

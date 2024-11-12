@@ -18,9 +18,9 @@ def main(context):
     
     # first, triangulate, to make sure that our algorithm runs at the triangle level
     # that will be exported.
-    #bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method='BEAUTY', ngon_method='BEAUTY')
+    bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method='BEAUTY', ngon_method='BEAUTY')
     # remove zero-area faces and edges
-    #bmesh.ops.dissolve_degenerate(bm, dist=EPSILON, edges=bm.edges[:])
+    bmesh.ops.dissolve_degenerate(bm, dist=EPSILON, edges=bm.edges[:])
     
     # need to add 3 UV layers, as layer 3 will be used for CUSTOM0
     while len(bm.loops.layers.uv) < 3:
