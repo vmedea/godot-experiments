@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://mesh_instance_3d.gd" id="1_5o51b"]
 [ext_resource type="Script" path="res://root.gd" id="1_oqgec"]
-[ext_resource type="ArrayMesh" uid="uid://o1kmphhqu7js" path="res://hetobject.res" id="2_hu0wx"]
+[ext_resource type="ArrayMesh" path="res://pentagon.res" id="2_uvbvs"]
 
 [sub_resource type="Environment" id="Environment_5q1dk"]
 background_mode = 1
@@ -11,7 +11,7 @@ background_mode = 1
 script = ExtResource("1_oqgec")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = ExtResource("2_hu0wx")
+mesh = ExtResource("2_uvbvs")
 script = ExtResource("1_5o51b")
 
 [node name="Camera3D" type="Camera3D" parent="."]

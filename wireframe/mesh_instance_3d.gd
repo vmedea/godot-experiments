@@ -3,7 +3,7 @@ extends MeshInstance3D
 
 func set_wireframe_mesh(mesh_in: ArrayMesh) -> void:
 	assert(mesh_in.surface_get_primitive_type(0) == Mesh.PRIMITIVE_TRIANGLES)
-	var arr_mesh := MeshUtils.duplicate_vertices(mesh_in)
+	var arr_mesh := MeshUtils.unroll_vertices(mesh_in, [Mesh.ARRAY_VERTEX, Mesh.ARRAY_CUSTOM0])
 	assert(arr_mesh.surface_get_primitive_type(0) == Mesh.PRIMITIVE_TRIANGLES)
 	
 	var material := ShaderMaterial.new()

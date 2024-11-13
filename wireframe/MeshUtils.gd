@@ -51,7 +51,7 @@ static func array_granularity(arr_id: Mesh.ArrayType, format: Mesh.ArrayFormat) 
 ## Known limitations: 
 ## - ignores blend shapes
 ## - ignores LODs
-static func duplicate_vertices(input: ArrayMesh) -> ArrayMesh:
+static func unroll_vertices(input: ArrayMesh, keep_arrays: Array[Mesh.ArrayType] = []) -> ArrayMesh:
 	var output := ArrayMesh.new()
 	for surf in input.get_surface_count():
 		var arrays := input.surface_get_arrays(surf)
@@ -63,7 +63,7 @@ static func duplicate_vertices(input: ArrayMesh) -> ArrayMesh:
 		for arr_id in len(arrays):
 			if arr_id == Mesh.ARRAY_INDEX: # this is the one we want to eliminate
 				continue
-			if arrays[arr_id] == null:
+			if arrays[arr_id] == null or (keep_arrays and arr_id not in keep_arrays):
 				continue
 			var arr_in = arrays[arr_id]
 			var typeid := typeof(arr_in)
