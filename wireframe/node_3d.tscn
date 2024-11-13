@@ -1,6 +1,5 @@
-[gd_scene load_steps=7 format=4 uid="uid://h5geq516bv1i"]
+[gd_scene load_steps=6 format=4 uid="uid://h5geq516bv1i"]
 
-[ext_resource type="Script" path="res://mesh_instance_3d.gd" id="1_5o51b"]
 [ext_resource type="Script" path="res://root.gd" id="1_oqgec"]
 [ext_resource type="Shader" path="res://shader.gdshader" id="2_awv65"]
 
@@ -31,7 +30,6 @@ script = ExtResource("1_oqgec")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_65hdd")
-script = ExtResource("1_5o51b")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.58131)
