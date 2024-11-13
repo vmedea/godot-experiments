@@ -14,7 +14,7 @@ func set_wireframe_mesh(mesh_in: ArrayMesh) -> void:
 
 
 func _ready() -> void:
-	set_wireframe_mesh(mesh)
+	pass
 
 
 func _process(delta: float) -> void:

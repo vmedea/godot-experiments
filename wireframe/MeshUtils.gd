@@ -1,4 +1,5 @@
 ## Mesh manipulation utilities.
+@tool
 extends Object # do not instantiate
 class_name MeshUtils
 

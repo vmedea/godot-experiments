@@ -1,8 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://h5geq516bv1i"]
+[gd_scene load_steps=7 format=4 uid="uid://h5geq516bv1i"]
 
 [ext_resource type="Script" path="res://mesh_instance_3d.gd" id="1_5o51b"]
 [ext_resource type="Script" path="res://root.gd" id="1_oqgec"]
-[ext_resource type="ArrayMesh" path="res://pentagon.res" id="2_uvbvs"]
+[ext_resource type="Shader" path="res://shader.gdshader" id="2_awv65"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h3lo3"]
+render_priority = 0
+shader = ExtResource("2_awv65")
+shader_parameter/line_color = Color(0, 1, 0, 1)
+shader_parameter/base_color = Color(0, 0, 0, 1)
+shader_parameter/line_width = 2.0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_65hdd"]
+_surfaces = [{
+"aabb": AABB(-0.951057, 0, -1, 1.90211, 0.677224, 1.80902),
+"attribute_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/"),
+"format": 34359779393,
+"material": SubResource("ShaderMaterial_h3lo3"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 78,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAIC/GHkWvwAAAAC9G08/GHkWPwAAAAC9G08/AAAAAC0Axz4AAIC/cXhzPy0Axz56N56+OGnpPoheLT/+rRe+cXhzvwAAAAB6N56+AAAAAAAAAAAAAIC/AAAAAC0Axz4AAIC/cXhzPwAAAAB6N56+GHkWPwAAAAC9G08/GHkWPy0Axz69G08/GHkWvwAAAAC9G08/cXhzvwAAAAB6N56+cXhzvy0Axz56N56+AAAAAAAAAAAAAIC/cXhzPwAAAAB6N56+cXhzPy0Axz56N56+GHkWPwAAAAC9G08/GHkWvwAAAAC9G08/GHkWvy0Axz69G08/hUGQPoheLT8fjcY+ZE99MYheLT9AbPW+OGnpPoheLT/+rRe+GHkWPy0Axz69G08/GHkWvy0Axz69G08/hUGQvoheLT8fjcY+cXhzvy0Axz56N56+AAAAAC0Axz4AAIC/ZE99MYheLT9AbPW+cXhzPy0Axz56N56+GHkWPy0Axz69G08/hUGQPoheLT8fjcY+cXhzvy0Axz56N56+OGnpvoheLT/+rRe+hUGQvoheLT8fjcY+GHkWvwAAAAC9G08/AAAAAAAAAAAAAIC/cXhzvwAAAAB6N56+AAAAAAAAAAAAAIC/GHkWPwAAAAC9G08/cXhzPwAAAAB6N56+AAAAAC0Axz4AAIC/OGnpPoheLT/+rRe+ZE99MYheLT9AbPW+cXhzvwAAAAB6N56+AAAAAC0Axz4AAIC/cXhzvy0Axz56N56+cXhzPwAAAAB6N56+GHkWPy0Axz69G08/cXhzPy0Axz56N56+GHkWvwAAAAC9G08/cXhzvy0Axz56N56+GHkWvy0Axz69G08/AAAAAAAAAAAAAIC/cXhzPy0Axz56N56+AAAAAC0Axz4AAIC/GHkWPwAAAAC9G08/GHkWvy0Axz69G08/GHkWPy0Axz69G08/ZE99MYheLT9AbPW+hUGQvoheLT8fjcY+OGnpvoheLT/+rRe+hUGQvoheLT8fjcY+ZE99MYheLT9AbPW+hUGQPoheLT8fjcY+GHkWPy0Axz69G08/hUGQvoheLT8fjcY+hUGQPoheLT8fjcY+cXhzvy0Axz56N56+ZE99MYheLT9AbPW+OGnpvoheLT/+rRe+cXhzPy0Axz56N56+hUGQPoheLT8fjcY+OGnpPoheLT/+rRe+cXhzvy0Axz56N56+hUGQvoheLT8fjcY+GHkWvy0Axz69G08/")
+}]
 
 [sub_resource type="Environment" id="Environment_5q1dk"]
 background_mode = 1
@@ -11,7 +30,7 @@ background_mode = 1
 script = ExtResource("1_oqgec")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = ExtResource("2_uvbvs")
+mesh = SubResource("ArrayMesh_65hdd")
 script = ExtResource("1_5o51b")
 
 [node name="Camera3D" type="Camera3D" parent="."]
