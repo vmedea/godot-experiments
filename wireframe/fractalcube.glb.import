@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cds5bbemsyj4o"
-path="res://.godot/imported/pentagon.glb-59c5ee8edc672691a0dfa6efab66d7b7.scn"
+uid="uid://phe4a1ags6pr"
+path="res://.godot/imported/fractalcube.glb-ec50605c2852baf21aeb3e5bbe2d1b6f.scn"
 
 [deps]
 
-source_file="res://pentagon.glb"
-dest_files=["res://.godot/imported/pentagon.glb-59c5ee8edc672691a0dfa6efab66d7b7.scn"]
+source_file="res://fractalcube.glb"
+dest_files=["res://.godot/imported/fractalcube.glb-ec50605c2852baf21aeb3e5bbe2d1b6f.scn"]
 
 [params]
 
@@ -31,18 +31,6 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path="postprocess_wireframe.gd"
-_subresources={
-"meshes": {
-"pentagon_Circle": {
-"generate/lightmap_uv": 0,
-"generate/lods": 0,
-"generate/shadow_meshes": 0,
-"lods/normal_merge_angle": 60.0,
-"lods/normal_split_angle": 25.0,
-"save_to_file/enabled": false,
-"save_to_file/path": "res://pentagon.res"
-}
-}
-}
+_subresources={}
 gltf/naming_version=1
 gltf/embedded_image_handling=1
