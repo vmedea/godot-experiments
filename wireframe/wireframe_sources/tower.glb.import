@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://df83curb8s4f1"
-path="res://.godot/imported/gripper.glb-b73ea33531445aa09f6552fc9d17d13e.scn"
+uid="uid://dtgog63e5yo86"
+path="res://.godot/imported/tower.glb-b72c8a75b8e7588f1d1af4fbfe26871b.scn"
 
 [deps]
 
-source_file="res://gripper.glb"
-dest_files=["res://.godot/imported/gripper.glb-b73ea33531445aa09f6552fc9d17d13e.scn"]
+source_file="res://wireframe_sources/tower.glb"
+dest_files=["res://.godot/imported/tower.glb-b72c8a75b8e7588f1d1af4fbfe26871b.scn"]
 
 [params]
 
@@ -31,18 +31,6 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path="postprocess_wireframe.gd"
-_subresources={
-"meshes": {
-"gripper_Cube": {
-"generate/lightmap_uv": 0,
-"generate/lods": 0,
-"generate/shadow_meshes": 0,
-"lods/normal_merge_angle": 60.0,
-"lods/normal_split_angle": 25.0,
-"save_to_file/enabled": false,
-"save_to_file/path": "res://gripper.res"
-}
-}
-}
+_subresources={}
 gltf/naming_version=1
 gltf/embedded_image_handling=1

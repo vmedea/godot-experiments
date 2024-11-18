@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://phe4a1ags6pr"
-path="res://.godot/imported/fractalcube.glb-ec50605c2852baf21aeb3e5bbe2d1b6f.scn"
+uid="uid://c82rwwf4hect6"
+path="res://.godot/imported/hetobject.glb-efe761b9137ff4bae8bf6d2904521198.scn"
 
 [deps]
 
-source_file="res://fractalcube.glb"
-dest_files=["res://.godot/imported/fractalcube.glb-ec50605c2852baf21aeb3e5bbe2d1b6f.scn"]
+source_file="res://wireframe_sources/hetobject.glb"
+dest_files=["res://.godot/imported/hetobject.glb-efe761b9137ff4bae8bf6d2904521198.scn"]
 
 [params]
 

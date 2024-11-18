@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c82rwwf4hect6"
-path="res://.godot/imported/hetobject.glb-000f6977d4a5138523f40285ae9d2d1a.scn"
+uid="uid://df83curb8s4f1"
+path="res://.godot/imported/gripper.glb-7819a698ff3166c6dfc50bf209a15b15.scn"
 
 [deps]
 
-source_file="res://hetobject.glb"
-dest_files=["res://.godot/imported/hetobject.glb-000f6977d4a5138523f40285ae9d2d1a.scn"]
+source_file="res://wireframe_sources/gripper.glb"
+dest_files=["res://.godot/imported/gripper.glb-7819a698ff3166c6dfc50bf209a15b15.scn"]
 
 [params]
 
@@ -31,6 +31,18 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path="postprocess_wireframe.gd"
-_subresources={}
+_subresources={
+"meshes": {
+"gripper_Cube": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": false,
+"save_to_file/path": "res://gripper.res"
+}
+}
+}
 gltf/naming_version=1
 gltf/embedded_image_handling=1

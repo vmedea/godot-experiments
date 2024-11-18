@@ -1,14 +1,15 @@
-[gd_scene load_steps=13 format=4 uid="uid://h5geq516bv1i"]
+[gd_scene load_steps=14 format=4 uid="uid://h5geq516bv1i"]
 
 [ext_resource type="Script" path="res://root.gd" id="1_oqgec"]
 [ext_resource type="Shader" path="res://shader.gdshader" id="2_awv65"]
-[ext_resource type="ArrayMesh" uid="uid://cqjl0lexhca6q" path="res://wireframes/gripper.res" id="3_8hi3e"]
-[ext_resource type="ArrayMesh" uid="uid://carkh46i7lnuk" path="res://wireframes/hetobject.res" id="4_h1xq0"]
-[ext_resource type="ArrayMesh" uid="uid://tuud2nocnlmr" path="res://wireframes/holecube.res" id="5_kfqpk"]
-[ext_resource type="ArrayMesh" uid="uid://bnykti3xi5qrb" path="res://wireframes/cross3d.res" id="6_csfun"]
-[ext_resource type="ArrayMesh" uid="uid://co4at4xjak6lx" path="res://wireframes/tower.res" id="7_qv7vw"]
-[ext_resource type="ArrayMesh" uid="uid://d3ruqbviiup64" path="res://wireframes/fractalcube.res" id="8_pyf1s"]
-[ext_resource type="ArrayMesh" uid="uid://dia2ac6a7rhpp" path="res://wireframes/reacher1.res" id="9_tgwn8"]
+[ext_resource type="ArrayMesh" uid="uid://dhslgx6exwseu" path="res://wireframes/gripper.res" id="3_8hi3e"]
+[ext_resource type="ArrayMesh" uid="uid://c45bb3if4n62g" path="res://wireframes/hetobject.res" id="4_h1xq0"]
+[ext_resource type="ArrayMesh" uid="uid://c3ufp7213hocn" path="res://wireframes/holecube.res" id="5_kfqpk"]
+[ext_resource type="ArrayMesh" uid="uid://dqog4jjygj0p2" path="res://wireframes/cross3d.res" id="6_csfun"]
+[ext_resource type="ArrayMesh" uid="uid://ejsb3pv3h1we" path="res://wireframes/tower.res" id="7_qv7vw"]
+[ext_resource type="ArrayMesh" uid="uid://b6gj17mhltyon" path="res://wireframes/fractalcube.res" id="8_pyf1s"]
+[ext_resource type="ArrayMesh" uid="uid://dhcamklodp1yy" path="res://wireframes/reacher1.res" id="9_tgwn8"]
+[ext_resource type="ArrayMesh" uid="uid://dc6vufbmtqnc5" path="res://wireframes/spykey.res" id="10_4j4wm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h3lo3"]
 render_priority = 0
@@ -80,3 +81,7 @@ mesh = ExtResource("9_tgwn8")
 skeleton = NodePath("../..")
 
 [node name="Node3D" type="Node3D" parent="."]
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.92869, 0, -6.30967)
+mesh = ExtResource("10_4j4wm")

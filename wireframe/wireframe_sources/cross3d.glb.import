@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://btrxg8x6qcoeo"
-path="res://.godot/imported/cross3d.glb-74d2ac63ae2e4292265f058d11e6b83e.scn"
+path="res://.godot/imported/cross3d.glb-88457bfbcd38c06b28f1f1122728b7a9.scn"
 
 [deps]
 
-source_file="res://cross3d.glb"
-dest_files=["res://.godot/imported/cross3d.glb-74d2ac63ae2e4292265f058d11e6b83e.scn"]
+source_file="res://wireframe_sources/cross3d.glb"
+dest_files=["res://.godot/imported/cross3d.glb-88457bfbcd38c06b28f1f1122728b7a9.scn"]
 
 [params]
 

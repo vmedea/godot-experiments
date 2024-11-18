@@ -24,7 +24,12 @@ func _post_import(scene: Node) -> Object:
 		#child.mesh = mesh_out
 		#child.set_surface_override_material(0, material)
 		#print('Updated ', child)
+		
 		var filename_out := OUT_PATH + scene.name + ".res"
 		ResourceSaver.save(mesh_out, filename_out)
+		# doesn't seem to help
+		#, ResourceSaver.SaverFlags.FLAG_CHANGE_PATH | ResourceSaver.SaverFlags.FLAG_REPLACE_SUBRESOURCE_PATHS)
+		
+		break # only export first mesh
 
 	return scene # Return the modified root node when you're done.
