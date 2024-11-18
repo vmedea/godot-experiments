@@ -26,6 +26,7 @@ func _post_import(scene: Node) -> Object:
 		#print('Updated ', child)
 		
 		var filename_out := OUT_PATH + scene.name + ".res"
+		#mesh_out.take_over_path(filename_out)
 		ResourceSaver.save(mesh_out, filename_out)
 		# doesn't seem to help
 		#, ResourceSaver.SaverFlags.FLAG_CHANGE_PATH | ResourceSaver.SaverFlags.FLAG_REPLACE_SUBRESOURCE_PATHS)
