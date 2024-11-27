@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://h5geq516bv1i"]
+[gd_scene load_steps=15 format=4 uid="uid://h5geq516bv1i"]
 
 [ext_resource type="Script" path="res://root.gd" id="1_oqgec"]
 [ext_resource type="Shader" path="res://shader.gdshader" id="2_awv65"]
@@ -11,7 +11,6 @@
 [ext_resource type="ArrayMesh" uid="uid://dhcamklodp1yy" path="res://wireframes/reacher1.res" id="9_tgwn8"]
 [ext_resource type="ArrayMesh" uid="uid://dc6vufbmtqnc5" path="res://wireframes/spykey.res" id="10_4j4wm"]
 [ext_resource type="ArrayMesh" uid="uid://bgpsehsjlgdj4" path="res://wireframes/monitor.res" id="11_4uxpe"]
-[ext_resource type="ArrayMesh" uid="uid://0yflu5ixcpqq" path="res://wireframes/x0f-instance-cutout.res" id="12_uvc84"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h3lo3"]
 render_priority = 0
@@ -91,7 +90,3 @@ mesh = ExtResource("10_4j4wm")
 [node name="MeshInstance3D9" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.13419, 0, 3.91678)
 mesh = ExtResource("11_4uxpe")
-
-[node name="X0f-instance-cutout" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-08, 1, 0, 4.37114e-08, 1.91069e-15, -1, -1, -4.37114e-08, -4.37114e-08, -9.03054, 0, 2.92582)
-mesh = ExtResource("12_uvc84")

@@ -14,7 +14,7 @@ func _post_import(scene: Node) -> Object:
 		var mesh_in: ArrayMesh = child.mesh
 
 		assert(mesh_in.surface_get_primitive_type(0) == Mesh.PRIMITIVE_TRIANGLES)
-		var mesh_out := MeshUtils.unroll_vertices(mesh_in, [Mesh.ARRAY_VERTEX, Mesh.ARRAY_CUSTOM0])
+		var mesh_out := MeshUtils.unroll_vertices(mesh_in, [Mesh.ARRAY_VERTEX, Mesh.ARRAY_TEX_UV, Mesh.ARRAY_CUSTOM0])
 		assert(mesh_out.surface_get_primitive_type(0) == Mesh.PRIMITIVE_TRIANGLES)
 		
 		var material := ShaderMaterial.new()
