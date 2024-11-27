@@ -12,37 +12,30 @@ const vec3 vectors[3] = {
 };
 
 varying vec3 bary_coord;
-varying vec3 color0;
-varying vec3 color1;
-varying vec3 color2;
+varying vec3 weights;
 
 void vertex() {
 	int vtx = VERTEX_ID % 3;
 	bary_coord = vectors[vtx];
 	if (vtx == 0) {
-		color0 = mix(base_color, line_color, CUSTOM0.x);
-		color1 = base_color; // irrelevant
-		color2 = mix(base_color, line_color, CUSTOM0.y);
+		weights = vec3(CUSTOM0.x, 0.0, CUSTOM0.y);
 	} else if (vtx == 1) {
-		color0 = base_color; // irrelevant
-		color1 = mix(base_color, line_color, CUSTOM0.y);
-		color2 = mix(base_color, line_color, CUSTOM0.x);
+		weights = vec3(0.0, CUSTOM0.y, CUSTOM0.x);
 	} else if (vtx == 2) {
-		color0 = mix(base_color, line_color, CUSTOM0.y);
-		color1 = mix(base_color, line_color, CUSTOM0.x);
-		color2 = base_color; // irrelevant
+		weights = vec3(CUSTOM0.y, CUSTOM0.x, 0.0);
 	}
 }
 
 void fragment() {
-	vec3 col = vec3(0.0, 0.0, 0.0);
+	float weight;
 	if (bary_coord.x > bary_coord.y && bary_coord.y < bary_coord.z) {
-		col = color0;
+		weight = weights.x;
 	} else if (bary_coord.z > bary_coord.x && bary_coord.x < bary_coord.y) {
-		col = color1;
+		weight = weights.y;
 	} else { // if (bary_coord.y > bary_coord.z && bary_coord.z < bary_coord.x) {
-		col = color2;
+		weight = weights.z;
 	}
+	vec3 col = mix(base_color, line_color, weight);
 
 	vec3 bary_coord_dx = dFdx(bary_coord);
 	vec3 bary_coord_dy = dFdy(bary_coord);
