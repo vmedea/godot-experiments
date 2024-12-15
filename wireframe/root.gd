@@ -11,3 +11,5 @@ func _input(event: InputEvent):
 func _process(delta: float):
 	tri.rotate_y(delta)
 	
+	var turn := Input.get_axis(&"turn_left", &"turn_right")
+	var move := Input.get_axis(&"move_backward", &"move_forward")
