@@ -44,3 +44,12 @@ Controls:
 - `P`: Pause/unpause game
 - `Esc`: Quit
 - `F12`: Screenshot
+
+## Wireframe
+
+Experiment with opaque wireframe rendering using shaders. A custom exporter from
+blender is provided that marks inner triangle edges (edges on a flat surface)
+as invisible, for a less cluttered view.
+
+![wireframe](screenshots/wireframe.webp)
+
